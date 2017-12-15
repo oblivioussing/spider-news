@@ -5,66 +5,86 @@ const http = require('http');
 const https = require('https');
 const request = require('request');
 const core = require('../base/core');
-const root = 'D:/Project/node/spider-news'
-let $;
+const root = 'D:/Project/nodejs/spider-news'
 
 //爬虫初始化
 const spiderInit = (req) => {
   return new Promise(async(resolve, reject) => {
+    const url = req.url;
+    const articleCode = req.articleCode;
+    !url && reject();
+    let $;
+    //文章目录
+    let articlePath;
+    //需要返回结果
+    let result = {
+      title: '', //标题
+      desc: '', //描述
+      minipic: '', //头图
+      url: '' //文章地址
+    }
+    //创建puppeteer
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.setExtraHTTPHeaders({ 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36' })
-    await page.goto(req.url);
-    //模拟点击事件
-    await page.click('._3kfd8QSnqfsnaXmIaniUI3');
-    //选择头图
-    let coverUrl = await ascend(page);
-    //保存头图
-    coverUrl && saveCover(coverUrl);
+    await page.goto(url);
+    // // // //模拟点击事件
+    await page.waitForSelector('._3em8Ej2zWZAW8Nj3xKSF9c');
+    await page.click('._3em8Ej2zWZAW8Nj3xKSF9c');
+    //根据文章id创建文件夹(如果存在则删除)
+    articlePath = `${root}/article/${articleCode}`;
+    if (!fs.existsSync(articlePath)) {
+      fs.mkdirSync(articlePath); //文章目录
+      fs.mkdirSync(articlePath + '/img'); //图片目录
+      fs.mkdirSync(articlePath + '/minipic'); //头图目录
+    }
+    //获取并下载头图
+    const minipic = await ascend(page);
+    minipic && saveMinipic(minipic, articlePath);
+    result.minipic = `${articlePath}/minipic/minipic.png`;
     //获取页面所有内容
     const html = await page.$eval('html', el => el.outerHTML);
     $ = cheerio.load(html, { decodeEntities: false });
-    //去除css和script外部引用
-    removeAsset();
+    //去除main.fedf78ba.js引用(不然会导致页面白屏)
+    removeAsset($);
     //抓取图片 
-    await saveImg();
+    await saveImg($,articlePath);
     //移除最底部的按钮
     $('._3J9LS0hE611NF98iLoPe9P').remove();
     $('.Q-R81yIZjT-MUA5SNBANp').remove();
     //添加自己的广告
-    advert();
+    advert($);
     //写入html
-    fs.writeFileSync(`${root}/reserve/html/test.html`, $.html());
+    fs.writeFileSync(`${articlePath}/index.html`, $.html());
     //关闭浏览器
     await browser.close();
     //返回
     let title = '';
-    $('._2poZ855aoGVenxcOnR5VXw>span').each((index, item) => {
+    $('._1PgoakIM6yoElVvNmFVyaK>span').each((index, item) => {
       title += $(item).html();
     });
-    const result = {
-      title: title,
-      desc: title,
-      minipic: '脑壳疼',
-      url: '心肝疼'
-    }
+    result.title = title;
+    result.desc = title;
+    result.url = `${articlePath}/index.html`;
     resolve(result);
   });
 };
 
 //保存头图
-const saveCover = (coverUrl) => {
-  request(coverUrl).pipe(fs.createWriteStream(`${root}/reserve/cover/cover.png`));
+const saveMinipic = (minipic, articlePath) => {
+  request(minipic).pipe(fs.createWriteStream(`${articlePath}/minipic/minipic.png`));
 }
 //选择头图
 const ascend = async(page) => {
   return new Promise(async(resolve, reject) => {
-    const url = await page.$$eval('img', el => {
+    await page.mainFrame().waitFor('._2pXgak5v8oUN3AADfbu6QU');
+    const url = await page.$$eval('._2pXgak5v8oUN3AADfbu6QU', el => {
       let src;
       for (let i = 0; i < el.length; i++) {
-        const width = el[i].offsetWidth;
-        const height = el[i].offsetHeight;
-        if (width >= 300 && 0.5 < width / height < 2) {
+        const width = el[i].clientWidth || '';
+        const height = el[i].height || '';
+        const ratio = width / height;
+        if (ratio && width >= 300 && 0.5 < ratio && ratio < 2) {
           src = el[i].getAttribute('src');
           break;
         }
@@ -75,7 +95,7 @@ const ascend = async(page) => {
   });
 }
 //添加自己的广告
-const advert = () => {
+const advert = ($) => {
   let img, script, link;
   img = '<img src="./" class="full-screen none" alt="">'; //全屏图片
   img += '<img src="../asset/img/loading.svg" class="gravity-center advert-loading">'; //加载loading
@@ -88,29 +108,26 @@ const advert = () => {
   $('head').append(script + link);
   $('#root').append(rootBottom);
 }
-//去除css和script外部引用
-const removeAsset = () => {
-  $('link').each((index, item) => {
-    const href = $(item).attr('href');
-    href && $(item).remove();
-  });
+//去除main.d83d8a5f.js引用(不然会导致页面白屏)
+const removeAsset = ($) => {
+  const mainJs = '//mat1.gtimg.com/pingjs/js/tnfe/works/news/main.fedf78ba.js';
   $('script').each((index, item) => {
     const src = $(item).attr('src');
-    src && $(item).remove();
+    src === mainJs && $(item).remove();
   });
 }
 //抓取图片
-const saveImg = async() => {
+const saveImg = async($,articlePath) => {
   return new Promise(async(resolve, reject) => {
     const len = $('img').length;
     for (let i = 0; i < len; i++) {
       await core.sleep(10);
       const src = $('img').eq(i).attr('src');
-      if (src.indexOf('http') === 0) {
+      if (src && src.indexOf('http') === 0) {
         //保存图片
         const stamp = +new Date();
-        request(src).pipe(fs.createWriteStream(`${root}/reserve/img/${stamp}.png`));
-        $('img').eq(i).attr('src', `../img/${stamp}.png`);
+        request(src).pipe(fs.createWriteStream(`${articlePath}/img/${stamp}.png`));
+        $('img').eq(i).attr('src', `./img/${stamp}.png`);
       }
     }
     resolve();
