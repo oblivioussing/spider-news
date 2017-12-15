@@ -1,12 +1,13 @@
-const puppeteer = require('puppeteer');
-const cheerio = require('cheerio');
-const fs = require('fs');
-const http = require('http');
-const https = require('https');
-const request = require('request');
-const core = require('../base/core');
+var puppeteer = require('puppeteer');
+var cheerio = require('cheerio');
+var fs = require('fs');
+var http = require('http');
+var https = require('https');
+var request = require('request');
+var core = require('../base/core');
 const root = 'D:/Project/nodejs/spider-news'
-
+const moreBtn = '._3em8Ej2zWZAW8Nj3xKSF9c'; //点击查看全文按钮样式
+const imgClass = '._2pXgak5v8oUN3AADfbu6QU'; //图片样式
 //爬虫初始化
 const spiderInit = (req) => {
   return new Promise(async(resolve, reject) => {
@@ -14,8 +15,6 @@ const spiderInit = (req) => {
     const articleCode = req.articleCode;
     !url && reject();
     let $;
-    //文章目录
-    let articlePath;
     //需要返回结果
     let result = {
       title: '', //标题
@@ -26,38 +25,26 @@ const spiderInit = (req) => {
     //创建puppeteer
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    await page.setExtraHTTPHeaders({ 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36' })
+    await page.setExtraHTTPHeaders({ 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36' });
     await page.goto(url);
-    // // // //模拟点击事件
-    await page.waitForSelector('._3em8Ej2zWZAW8Nj3xKSF9c');
-    await page.click('._3em8Ej2zWZAW8Nj3xKSF9c');
-    //根据文章id创建文件夹(如果存在则删除)
-    articlePath = `${root}/article/${articleCode}`;
+    //模拟点击事件
+    const more = await page.$(moreBtn);
+    more && await page.waitForSelector(moreBtn);
+    more && await page.click(moreBtn);
+    //根据文章id创建文件夹
+    let articlePath = `${root}/article/${articleCode}`; //文章目录
     if (!fs.existsSync(articlePath)) {
       fs.mkdirSync(articlePath); //文章目录
       fs.mkdirSync(articlePath + '/img'); //图片目录
-      fs.mkdirSync(articlePath + '/minipic'); //头图目录
     }
     //获取并下载头图
     const minipic = await ascend(page);
     minipic && saveMinipic(minipic, articlePath);
-    result.minipic = `${articlePath}/minipic/minipic.png`;
+    result.minipic = `${articlePath}/minipic.png`;
     //获取页面所有内容
     const html = await page.$eval('html', el => el.outerHTML);
     $ = cheerio.load(html, { decodeEntities: false });
-    //去除main.fedf78ba.js引用(不然会导致页面白屏)
-    removeAsset($);
-    //抓取图片 
-    await saveImg($,articlePath);
-    //移除最底部的按钮
-    $('._3J9LS0hE611NF98iLoPe9P').remove();
-    $('.Q-R81yIZjT-MUA5SNBANp').remove();
-    //添加自己的广告
-    advert($);
-    //写入html
-    fs.writeFileSync(`${articlePath}/index.html`, $.html());
-    //关闭浏览器
-    await browser.close();
+
     //返回
     let title = '';
     $('._1PgoakIM6yoElVvNmFVyaK>span').each((index, item) => {
@@ -67,18 +54,33 @@ const spiderInit = (req) => {
     result.desc = title;
     result.url = `${articlePath}/index.html`;
     resolve(result);
+
+    //去除main.fedf78ba.js引用(不然会导致页面白屏)
+    removeAsset($);
+    //抓取图片 
+    await saveImg($, articlePath);
+    //移除最底部的按钮
+    $('._3J9LS0hE611NF98iLoPe9P').remove();
+    $('.Q-R81yIZjT-MUA5SNBANp').remove();
+    //添加自己的广告
+    advert($);
+    //写入html
+    fs.writeFileSync(`${articlePath}/index.html`, $.html());
+    //关闭浏览器
+    await browser.close();
+    
   });
 };
 
 //保存头图
 const saveMinipic = (minipic, articlePath) => {
-  request(minipic).pipe(fs.createWriteStream(`${articlePath}/minipic/minipic.png`));
+  request(minipic).pipe(fs.createWriteStream(`${articlePath}/minipic.png`));
 }
 //选择头图
 const ascend = async(page) => {
   return new Promise(async(resolve, reject) => {
-    await page.mainFrame().waitFor('._2pXgak5v8oUN3AADfbu6QU');
-    const url = await page.$$eval('._2pXgak5v8oUN3AADfbu6QU', el => {
+    await page.waitFor(imgClass);
+    const url = await page.$$eval(imgClass, el => {
       let src;
       for (let i = 0; i < el.length; i++) {
         const width = el[i].clientWidth || '';
@@ -117,7 +119,7 @@ const removeAsset = ($) => {
   });
 }
 //抓取图片
-const saveImg = async($,articlePath) => {
+const saveImg = async($, articlePath) => {
   return new Promise(async(resolve, reject) => {
     const len = $('img').length;
     for (let i = 0; i < len; i++) {
