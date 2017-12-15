@@ -44,8 +44,7 @@ const spiderInit = (req) => {
     //获取页面所有内容
     const html = await page.$eval('html', el => el.outerHTML);
     $ = cheerio.load(html, { decodeEntities: false });
-
-    //返回
+    //返回结果
     let title = '';
     $('._1PgoakIM6yoElVvNmFVyaK>span').each((index, item) => {
       title += $(item).html();
@@ -54,7 +53,6 @@ const spiderInit = (req) => {
     result.desc = title;
     result.url = `${articlePath}/index.html`;
     resolve(result);
-
     //去除main.fedf78ba.js引用(不然会导致页面白屏)
     removeAsset($);
     //抓取图片 
