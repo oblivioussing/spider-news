@@ -4,11 +4,10 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var app = express();
 
-var index = require('./routes/index');
 var spider = require('./routes/spider/index');
 
-var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,8 +25,7 @@ app.all('*', (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   next();
 });
-
-app.use('/', index);
+//爬虫接口
 app.use('/spider', spider);
 
 // catch 404 and forward to error handler

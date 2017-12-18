@@ -1,11 +1,17 @@
 var express = require('express');
-var news = require('./news');
+var qqNews = require('./qqNews');
 var router = express.Router();
 
-//抓取文章
-router.post('/news', async(req, res, next) => {
-  const result = await news(req.body);
-  res.send(result);
+//腾讯新闻
+router.post('/qqNews', async(req, res, next) => {
+  const url = req.body.url;
+  const articleCode = req.body.articleCode;
+  if (url) {
+    const result = await qqNews({ url, articleCode });
+    res.send(result);
+  } else {
+    res.send({ 'msg': 'url不能为空!' });
+  }
 });
 
 
