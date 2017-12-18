@@ -4,7 +4,7 @@ var core = require('./core');
 
 module.exports = {
   //user-agent
-  ua: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36' },
+  ua: { 'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0.1; MI 4LTE Build/MMB29M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/46.0.2490.76 Mobile Safari/537.36' },
   //文章域名地址
   host: 'http://www.host.com',
   //系统根目录
@@ -26,7 +26,6 @@ module.exports = {
   //获取头图
   getMinipic: (page, img) => {
     return new Promise(async(resolve, reject) => {
-      await page.waitFor(img);
       const url = await page.$$eval(img, el => {
         let src;
         for (let i = 0; i < el.length; i++) {

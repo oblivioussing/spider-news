@@ -19,51 +19,45 @@ const spiderInit = (req) => {
     const page = await browser.newPage();
     await page.setExtraHTTPHeaders(main.ua);
     await page.goto(url);
-    //模拟点击事件
-    await page.waitForSelector('._3em8Ej2zWZAW8Nj3xKSF9c');
-    await page.click('._3em8Ej2zWZAW8Nj3xKSF9c');
     //创建文章目录
     main.mkArticlePath(articlePath);
     //获取头图
     await page.waitFor(500);
-    const minipic = await main.getMinipic(page, '._2pXgak5v8oUN3AADfbu6QU');
+    const minipic = await main.getMinipic(page, '.art_img_mini_img');
     //获取页面所有内容 
     const html = await page.$eval('html', el => el.outerHTML);
     $ = cheerio.load(html, { decodeEntities: false });
     //返回结果
-    let title = '';
-    $('._1PgoakIM6yoElVvNmFVyaK>span').each((index, item) => {
-      title += $(item).html();
-    });
+    let title = $('.art_box .art_tit_h1').html();
     result.minipic = minipic ? `${articlePath}/minipic.png` : '';
     result.title = title;
     result.desc = title;
     result.url = `${articlePath}/index.html`;
     resolve(result);
     //下载头图
-    minipic && main.downMinipic(minipic, articlePath);
-    //去除main.fedf78ba.js引用(不然会导致页面白屏)
+    // minipic && main.downMinipic(minipic, articlePath);
+    //去除部分原文章资源
     removeAsset($);
-    //移除最底部的按钮
-    $('._3ggQez72YVSmfcfD8kd7M9').remove();
     //下载图片 
-    await main.downImg($, articlePath);
+    // await main.downImg($, articlePath);
     //添加自己的广告
-    main.advert($, '#root');
+    main.advert($, '.at-content');
     //写入html
     main.saveHtml($, articlePath);
     //关闭浏览器
     await browser.close();
   });
 };
-//去除main.d83d8a5f.js引用(不然会导致页面白屏)
+//去除部分原文章资源
 var removeAsset = ($) => {
   $('script').each((index, item) => {
     let src = $(item).attr('src');
-    if(src){
-      src.indexOf('main')>=0 && $(item).remove();
+    if (src) {
+      src.indexOf('common.js') >= 0 && $(item).remove();
     }
   });
+  $('.page_main').not('.art_box').remove();
+  $('.j_cmnt_bottom').remove();
 }
 
 module.exports = spiderInit;
