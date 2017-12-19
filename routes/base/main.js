@@ -43,42 +43,47 @@ module.exports = {
     });
   },
   //下载头图
-  downMinipic:(url, path)=>{
-  	request(url).pipe(fs.createWriteStream(`${path}/minipic.png`));
+  downMinipic: (url, path, http = 'https:') => {
+    if (url.indexOf('http') === 0 || url.indexOf('//') === 0) {
+      url = url.indexOf('http') < 0 ? http + url : url;
+    }
+    console.log(url);
+    request(url).pipe(fs.createWriteStream(`${path}/minipic.png`));
   },
   //下载图片
-  downImg:($, path)=>{
-  	return new Promise(async(resolve, reject) => {
-	    const len = $('img').length;
-	    for (let i = 0; i < len; i++) {
-	      await core.sleep(10);
-	      const src = $('img').eq(i).attr('src');
-	      if (src && src.indexOf('http') === 0) {
-	        //保存图片
-	        const stamp = +new Date();
-	        request(src).pipe(fs.createWriteStream(`${path}/img/${stamp}.png`));
-	        $('img').eq(i).attr('src', `./img/${stamp}.png`);
-	      }
-	    }
-	    resolve();
-	  });
+  downImg: ($, path, http = 'https:') => {
+    return new Promise(async(resolve, reject) => {
+      const len = $('img').length;
+      for (let i = 0; i < len; i++) {
+        await core.sleep(10);
+        let src = $('img').eq(i).attr('src');
+        if (src.indexOf('http') === 0 || src.indexOf('//') === 0) {
+          src = src.indexOf('http') < 0 ? http + src : src;
+          //保存图片
+          const stamp = +new Date();
+          request(src).pipe(fs.createWriteStream(`${path}/img/${stamp}.png`));
+          $('img').eq(i).attr('src', `./img/${stamp}.png`);
+        }
+      }
+      resolve();
+    });
   },
   //添加自己的广告
-  advert:($,el)=>{
-  	let img, script, link;
-	  img = '<img src="./" class="full-screen none" alt="">'; //全屏图片
-	  img += '<img src="../asset/img/loading.svg" class="gravity-center advert-loading">'; //加载loading
-	  img += '<img src="../asset/img/bottom-fixed.jpg" class="bottom-fixed none" alt="">'; //底部固定的图片
-	  script = '<script src="../asset/js/zepto.min.js"></script>'; //引入zepto
-	  script += '<script src="../asset/js/index.js"></script>'; //引入自己的js
-	  link = '<link href="../asset/css/index.css" rel="stylesheet" type="text/css" />'; //引入自己的css
-	  let rootBottom = '<div class="root-bottom"><img src="../asset/img/bottom.jpg" alt=""></div>'; //最底部的图片
-	  $('body').prepend(img);
-	  $('head').append(script + link);
-	  $(el).append(rootBottom);
+  advert: ($, el) => {
+    let img, script, link;
+    img = '<img src="./" class="full-screen none" alt="">'; //全屏图片
+    img += '<img src="../asset/img/loading.svg" class="gravity-center advert-loading">'; //加载loading
+    img += '<img src="../asset/img/bottom-fixed.jpg" class="bottom-fixed none" alt="">'; //底部固定的图片
+    script = '<script src="../asset/js/zepto.min.js"></script>'; //引入zepto
+    script += '<script src="../asset/js/index.js"></script>'; //引入自己的js
+    link = '<link href="../asset/css/index.css" rel="stylesheet" type="text/css" />'; //引入自己的css
+    let rootBottom = '<div class="root-bottom"><img src="../asset/img/bottom.jpg" alt=""></div>'; //最底部的图片
+    $('body').prepend(img);
+    $('head').append(script + link);
+    $(el).append(rootBottom);
   },
   //写入html
-  saveHtml:($,path)=>{
-  	fs.writeFileSync(`${path}/index.html`, $.html());
+  saveHtml: ($, path) => {
+    fs.writeFileSync(`${path}/index.html`, $.html());
   }
 }

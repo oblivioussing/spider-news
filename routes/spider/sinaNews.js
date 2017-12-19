@@ -35,11 +35,11 @@ const spiderInit = (req) => {
     result.url = `${articlePath}/index.html`;
     resolve(result);
     //下载头图
-    // minipic && main.downMinipic(minipic, articlePath);
+    minipic && main.downMinipic(minipic, articlePath);
     //去除部分原文章资源
     removeAsset($);
     //下载图片 
-    // await main.downImg($, articlePath);
+    await main.downImg($, articlePath);
     //添加自己的广告
     main.advert($, '.at-content');
     //写入html
@@ -50,14 +50,7 @@ const spiderInit = (req) => {
 };
 //去除部分原文章资源
 var removeAsset = ($) => {
-  $('script').each((index, item) => {
-    let src = $(item).attr('src');
-    if (src) {
-      src.indexOf('common.js') >= 0 && $(item).remove();
-    }
-  });
-  $('.page_main').not('.art_box').remove();
-  $('.j_cmnt_bottom').remove();
+  $('.page_main').children().not('.s_card.z_c1').remove();
 }
 
 module.exports = spiderInit;

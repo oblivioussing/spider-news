@@ -29,6 +29,8 @@ $(function() {
       $root.removeClass('none');
       $body.addClass('visible');
       $bottomFixed.removeClass('none');
+      //去掉sina新闻底部菜单
+      $('.j_cmnt_bottom').remove();
     }, 3000);
   }
   //请求
