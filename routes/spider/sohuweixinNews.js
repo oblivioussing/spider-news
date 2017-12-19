@@ -19,22 +19,16 @@ const spiderInit = (req) => {
     const page = await browser.newPage();
     await page.setExtraHTTPHeaders(main.ua);
     await page.goto(url);
-    //模拟点击事件
-    await page.waitForSelector('._3em8Ej2zWZAW8Nj3xKSF9c');
-    await page.click('._3em8Ej2zWZAW8Nj3xKSF9c');
     //创建文章目录
     main.mkArticlePath(articlePath);
     //获取头图
     await page.waitFor(500);
-    const minipic = await main.getMinipic(page, '._2pXgak5v8oUN3AADfbu6QU');
+    const minipic = await main.getMinipic(page, 'img');
     //获取页面所有内容 
     const html = await page.$eval('html', el => el.outerHTML);
     $ = cheerio.load(html, { decodeEntities: false });
     //返回结果
-    let title = '';
-    $('._1PgoakIM6yoElVvNmFVyaK>span').each((index, item) => {
-      title += $(item).html();
-    });
+    let title = $('.rich_media_title').html();
     result.minipic = minipic ? `${articlePath}/minipic.png` : '';
     result.title = title;
     result.desc = title;
@@ -44,12 +38,10 @@ const spiderInit = (req) => {
     minipic && main.downMinipic(minipic, articlePath);
     //去除部分原文章资源
     removeAsset($);
-    //移除最底部的按钮
-    $('._3ggQez72YVSmfcfD8kd7M9').remove();
     //下载图片 
     await main.downImg($, articlePath);
     //添加自己的广告
-    main.advert($, '#root');
+    main.advert($, '.rich_media_content');
     //写入html
     main.saveHtml($, articlePath);
     //关闭浏览器

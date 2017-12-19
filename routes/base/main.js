@@ -33,7 +33,8 @@ module.exports = {
           const height = el[i].height || '';
           const ratio = width / height;
           if (ratio && width >= 300 && 0.5 < ratio && ratio < 2) {
-            src = el[i].getAttribute('src');
+            let dataSrc = el[i].getAttribute('data-src');
+            src = dataSrc ? dataSrc : el[i].getAttribute('src');
             break;
           }
         }
@@ -47,7 +48,6 @@ module.exports = {
     if (url.indexOf('http') === 0 || url.indexOf('//') === 0) {
       url = url.indexOf('http') < 0 ? http + url : url;
     }
-    console.log(url);
     request(url).pipe(fs.createWriteStream(`${path}/minipic.png`));
   },
   //下载图片
@@ -56,9 +56,11 @@ module.exports = {
       const len = $('img').length;
       for (let i = 0; i < len; i++) {
         await core.sleep(10);
-        let src = $('img').eq(i).attr('src');
-        if (src.indexOf('http') === 0 || src.indexOf('//') === 0) {
+        let src = $('img').eq(i).attr('src')||' ';
+        let dataSrc = $('img').eq(i).attr('data-src');
+        if (src.indexOf('http') === 0 || src.indexOf('//') === 0 || dataSrc) {
           src = src.indexOf('http') < 0 ? http + src : src;
+          src = dataSrc ? dataSrc : src;
           //保存图片
           const stamp = +new Date();
           request(src).pipe(fs.createWriteStream(`${path}/img/${stamp}.png`));
