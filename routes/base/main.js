@@ -69,12 +69,12 @@ module.exports = {
   advert: ($, el, baseUrl) => {
     let img, script, link;
     img = '<img src="./" class="full-screen none" alt="">'; //全屏图片
-    img += `<img src="${baseUrl}/asset/img/loading.svg" class="gravity-center advert-loading">`; //加载loading
-    img += `<img src="${baseUrl}/asset/img/bottom-fixed.jpg" class="bottom-fixed none" alt="">`; //底部固定的图片
-    script = `<script src="${baseUrl}/asset/js/zepto.min.js"></script>`; //引入zepto
-    script += `<script src="${baseUrl}/asset/js/index.js"></script>`; //引入自己的js
-    link = `<link href="${baseUrl}/asset/css/index.css" rel="stylesheet" type="text/css" />`; //引入自己的css
-    let rootBottom = `<div class="root-bottom"><img src="${baseUrl}/asset/img/bottom.jpg" alt=""></div>`; //最底部的图片
+    img += `<img src="${baseUrl}/article_asset/img/loading.svg" class="gravity-center advert-loading">`; //加载loading
+    img += `<img src="${baseUrl}/article_asset/img/bottom-fixed.jpg" class="bottom-fixed none" alt="">`; //底部固定的图片
+    script = `<script src="${baseUrl}/article_asset/js/zepto.min.js"></script>`; //引入zepto
+    script += `<script src="${baseUrl}/article_asset/js/index.js"></script>`; //引入自己的js
+    link = `<link href="${baseUrl}/article_asset/css/index.css" rel="stylesheet" type="text/css" />`; //引入自己的css
+    let rootBottom = `<div class="root-bottom"><img src="${baseUrl}/article_asset/img/bottom.jpg" alt=""></div>`; //最底部的图片
     $('body').prepend(img);
     $('head').append(script + link);
     $(el).append(rootBottom);
