@@ -7,8 +7,6 @@ const spiderInit = (req) => {
   const url = req.url;
   const articleCode = req.articleCode;
   let $;
-  //需要返回结果集
-  let result = main.result;
   //系统根目录
   const root = main.root;
   //文章目录
@@ -29,17 +27,19 @@ const spiderInit = (req) => {
     $ = cheerio.load(html, { decodeEntities: false });
     //返回结果
     let title = $('.art_box .art_tit_h1').html();
-    result.minipic = minipic ? `${articlePath}/minipic.png` : '';
-    result.title = title;
-    result.desc = title;
-    result.url = `${articlePath}/index.html`;
-    resolve(result);
+    const resultCode = dic.success;
+    const resultData = {
+      minipic: minipic ? `article/${articleCode}/minipic.png` : '',
+      title: title,
+      desc: title
+    }
+    resolve({ resultCode, resultData });
     //下载头图
     minipic && main.downMinipic(minipic, articlePath);
     //去除部分原文章资源
     removeAsset($);
     //下载图片 
-    await main.downImg($, articlePath);
+    await main.downImg($, articlePath, staticBaseUrl, articleCode);
     //添加自己的广告
     main.advert($, '.at-content');
     //写入html

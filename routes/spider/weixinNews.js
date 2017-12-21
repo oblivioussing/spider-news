@@ -2,34 +2,31 @@ var puppeteer = require('puppeteer');
 var cheerio = require('cheerio');
 var request = require('request');
 var main = require('../base/main');
-var dic = require('../base/dictionary');
 //爬虫初始化
 const spiderInit = (req) => {
-  let { url, articleCode, staticBaseUrl, staticBasePath } = req;
+  const url = req.url;
+  const articleCode = req.articleCode;
   let $;
+  //系统根目录
+  const root = main.root;
   //文章目录
-  const articlePath = `${staticBasePath}/article/${articleCode}`;
+  const articlePath = `${root}/article/${articleCode}`;
   return new Promise(async(resolve, reject) => {
     //创建puppeteer
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.setExtraHTTPHeaders(main.ua);
     await page.goto(url);
-    await page.waitForSelector('._3em8Ej2zWZAW8Nj3xKSF9c');
-    await page.click('._3em8Ej2zWZAW8Nj3xKSF9c');
     //创建文章目录
     main.mkArticlePath(articlePath);
     //获取头图
-    await page.waitFor(500);
-    const minipic = await main.getMinipic(page, '._2pXgak5v8oUN3AADfbu6QU');
+    await page.waitFor(1000);
+    const minipic = await main.getMinipic(page, 'img');
     //获取页面所有内容 
     const html = await page.$eval('html', el => el.outerHTML);
     $ = cheerio.load(html, { decodeEntities: false });
     //返回结果
-    let title = '';
-    $('._1PgoakIM6yoElVvNmFVyaK>span').each((index, item) => {
-      title += $(item).html();
-    });
+    let title = $('.rich_media_title').html().trim();
     const resultCode = dic.success;
     const resultData = {
       minipic: minipic ? `article/${articleCode}/minipic.png` : '',
@@ -41,12 +38,10 @@ const spiderInit = (req) => {
     minipic && main.downMinipic(minipic, articlePath);
     //去除部分原文章资源
     removeAsset($);
-    //移除最底部的按钮
-    $('._3ggQez72YVSmfcfD8kd7M9').remove();
     //下载图片 
     await main.downImg($, articlePath, staticBaseUrl, articleCode);
     //添加自己的广告
-    main.advert($, '#root', staticBaseUrl);
+    main.advert($, '.rich_media_content');
     //写入html
     main.saveHtml($, articlePath);
     //关闭浏览器
@@ -57,8 +52,8 @@ const spiderInit = (req) => {
 var removeAsset = ($) => {
   $('script').each((index, item) => {
     let src = $(item).attr('src');
-    if (src) {
-      src.indexOf('main') >= 0 && $(item).remove();
+    if(src){
+      src.indexOf('main')>=0 && $(item).remove();
     }
   });
 }

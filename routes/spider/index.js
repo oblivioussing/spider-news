@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
+var dic = require('../base/dictionary');
 var qqNews = require('./qqNews');
 var sohuNews = require('./sohuNews');
 var sinaNews = require('./sinaNews');
-var sohuweixinNews = require('./sohuweixinNews');
+var weixinNews = require('./weixinNews');
 
 //腾讯新闻
 router.post('/qqNews', (req, res, next) => {
@@ -17,20 +18,20 @@ router.post('/sohuNews', (req, res, next) => {
 router.post('/sinaNews', (req, res, next) => {
   judge(req, res, sinaNews);
 });
-//搜狐微信
-router.post('/sohuweixinNews', (req, res, next) => {
-  judge(req, res, sohuweixinNews);
+//微信新闻
+router.post('/weixinNews', (req, res, next) => {
+  judge(req, res, weixinNews);
 });
 
 //审判
 var judge = async(req, res, method) => {
-  const url = req.body.url;
-  const articleCode = req.body.articleCode;
+  const body = req.body;
+  let { url } = body;
   if (url) {
-    const result = await method({ url, articleCode });
+    const result = await method(body);
     res.send(result);
   } else {
-    res.send({ 'msg': 'url不能为空!' });
+    res.send({ resultCode: dic.authFail, msg: 'url不能为空!' });
   }
 }
 

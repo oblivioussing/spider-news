@@ -5,16 +5,11 @@ var core = require('./core');
 module.exports = {
   //user-agent
   ua: { 'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0.1; MI 4LTE Build/MMB29M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/46.0.2490.76 Mobile Safari/537.36' },
-  //文章域名地址
-  host: 'http://www.host.com',
-  //系统根目录
-  root: 'D:/Project/nodejs/spider-news',
-  //抓取完后,应该返回的结果集
+  //应该返回的结果集
   result: {
-    title: '', //标题
-    desc: '', //描述
-    minipic: '', //头图
-    url: '' //文章地址
+    resultCode: '', //业务响应码
+    resultData: {}, //返回数据对象
+    resultMsg: '' //业务响应描述
   },
   //创建文章目录
   mkArticlePath: (path) => {
@@ -47,39 +42,39 @@ module.exports = {
   downMinipic: (url, path, http = 'https:') => {
     if (url.indexOf('http') === 0 || url.indexOf('//') === 0) {
       url = url.indexOf('http') < 0 ? http + url : url;
+      request(url).pipe(fs.createWriteStream(`${path}/minipic.jpg`));
     }
-    request(url).pipe(fs.createWriteStream(`${path}/minipic.png`));
   },
   //下载图片
-  downImg: ($, path, http = 'https:') => {
+  downImg: ($, path, baseUrl, articleCode, http = 'https:') => {
     return new Promise(async(resolve, reject) => {
       const len = $('img').length;
       for (let i = 0; i < len; i++) {
         await core.sleep(10);
-        let src = $('img').eq(i).attr('src')||' ';
+        let src = $('img').eq(i).attr('src') || ' ';
         let dataSrc = $('img').eq(i).attr('data-src');
         if (src.indexOf('http') === 0 || src.indexOf('//') === 0 || dataSrc) {
           src = src.indexOf('http') < 0 ? http + src : src;
           src = dataSrc ? dataSrc : src;
           //保存图片
           const stamp = +new Date();
-          request(src).pipe(fs.createWriteStream(`${path}/img/${stamp}.png`));
-          $('img').eq(i).attr('src', `./img/${stamp}.png`);
+          request(src).pipe(fs.createWriteStream(`${path}/img/${stamp}.jpg`));
+          $('img').eq(i).attr('src', `${baseUrl}/article/${articleCode}/img/${stamp}.jpg`);
         }
       }
       resolve();
     });
   },
   //添加自己的广告
-  advert: ($, el) => {
+  advert: ($, el, baseUrl) => {
     let img, script, link;
     img = '<img src="./" class="full-screen none" alt="">'; //全屏图片
-    img += '<img src="../asset/img/loading.svg" class="gravity-center advert-loading">'; //加载loading
-    img += '<img src="../asset/img/bottom-fixed.jpg" class="bottom-fixed none" alt="">'; //底部固定的图片
-    script = '<script src="../asset/js/zepto.min.js"></script>'; //引入zepto
-    script += '<script src="../asset/js/index.js"></script>'; //引入自己的js
-    link = '<link href="../asset/css/index.css" rel="stylesheet" type="text/css" />'; //引入自己的css
-    let rootBottom = '<div class="root-bottom"><img src="../asset/img/bottom.jpg" alt=""></div>'; //最底部的图片
+    img += `<img src="${baseUrl}/asset/img/loading.svg" class="gravity-center advert-loading">`; //加载loading
+    img += `<img src="${baseUrl}/asset/img/bottom-fixed.jpg" class="bottom-fixed none" alt="">`; //底部固定的图片
+    script = `<script src="${baseUrl}/asset/js/zepto.min.js"></script>`; //引入zepto
+    script += `<script src="${baseUrl}/asset/js/index.js"></script>`; //引入自己的js
+    link = `<link href="${baseUrl}/asset/css/index.css" rel="stylesheet" type="text/css" />`; //引入自己的css
+    let rootBottom = `<div class="root-bottom"><img src="${baseUrl}/asset/img/bottom.jpg" alt=""></div>`; //最底部的图片
     $('body').prepend(img);
     $('head').append(script + link);
     $(el).append(rootBottom);
