@@ -1,4 +1,6 @@
 var puppeteer = require('puppeteer');
+var devices = require('puppeteer/DeviceDescriptors');
+var iPhone = devices['iPhone 6'];
 var cheerio = require('cheerio');
 var request = require('request');
 var main = require('../base/main');
@@ -15,6 +17,7 @@ const spiderInit = (req) => {
     //创建puppeteer
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
+    await page.emulate(iPhone);
     await page.setExtraHTTPHeaders(main.ua);
     await page.goto(url);
     //模拟点击事件

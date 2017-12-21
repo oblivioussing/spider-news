@@ -1,4 +1,6 @@
 var puppeteer = require('puppeteer');
+var devices = require('puppeteer/DeviceDescriptors');
+var iPhone = devices['iPhone 6'];
 var cheerio = require('cheerio');
 var request = require('request');
 var main = require('../base/main');
@@ -13,10 +15,15 @@ const spiderInit = (req) => {
     //创建puppeteer
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
+    await page.emulate(iPhone);
     await page.setExtraHTTPHeaders(main.ua);
     await page.goto(url);
-    await page.waitForSelector('._3em8Ej2zWZAW8Nj3xKSF9c');
-    await page.click('._3em8Ej2zWZAW8Nj3xKSF9c');
+    try{
+      await page.waitForSelector('._3em8Ej2zWZAW8Nj3xKSF9c', { visible: true, timeout: 2000 });
+      await page.click('._3em8Ej2zWZAW8Nj3xKSF9c');
+    }catch(e){
+      console.log(e);
+    }
     //创建文章目录
     main.mkArticlePath(articlePath);
     //获取头图
