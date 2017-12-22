@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var dic = require('../base/dictionary');
+var spiderResult = require('../base/result').spiderResult;
 var qqNews = require('./qqNews');
 var sohuNews = require('./sohuNews');
 var sinaNews = require('./sinaNews');
@@ -11,7 +11,6 @@ router.get('/qqNews', (req, res, next) => {
   judge(req.query, res, qqNews);
 });
 router.post('/qqNews', (req, res, next) => {
-  console.log(req.body);
   judge(req.body, res, qqNews);
 });
 //搜狐新闻
@@ -37,15 +36,26 @@ router.post('/weixinNews', (req, res, next) => {
 });
 
 
-//审判
-var judge = async(req, res, method) => {
-  console.log(req);
-  let { url } = req;
-  if (url) {
-    const result = await method(req);
+//验证参数是否为空
+const judge = async(req, res, method) => {
+  let verifyMap = {
+    url: spiderResult.urlNotNull,
+    articleCode: spiderResult.acNotNull,
+    staticBaseUrl: spiderResult.baseUrlNotNull,
+    staticBasePath: spiderResult.basePathNotNull
+  }
+  let result;
+  for (let item in req) {
+    if (!req[item] && verifyMap[item]) {
+      result = verifyMap[item];
+      break;
+    }
+  }
+  if (result) {
     res.send(result);
   } else {
-    res.send({ resultCode: dic.authFail, msg: 'url不能为空!' });
+    result = await method(req);
+    res.send(result);
   }
 }
 

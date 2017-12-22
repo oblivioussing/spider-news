@@ -4,7 +4,7 @@ var iPhone = devices['iPhone 6'];
 var cheerio = require('cheerio');
 var request = require('request');
 var main = require('../base/main');
-var dic = require('../base/dictionary');
+var spiderResult = require('../base/result').spiderResult;
 //爬虫初始化
 const spiderInit = (req) => {
   let { url, articleCode, staticBaseUrl, staticBasePath } = req;
@@ -37,13 +37,13 @@ const spiderInit = (req) => {
     $('._1PgoakIM6yoElVvNmFVyaK>span').each((index, item) => {
       title += $(item).html();
     });
-    const resultCode = dic.success;
     const resultData = {
       minipic: minipic ? `article/${articleCode}/minipic.png` : '',
       title: title,
       desc: title
     }
-    resolve({ resultCode, resultData });
+    const result = Object.assign(spiderResult.success,{resultData});
+    resolve(result);
     //下载头图
     minipic && main.downMinipic(minipic, articlePath);
     //去除部分原文章资源

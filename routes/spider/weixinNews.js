@@ -6,13 +6,10 @@ var request = require('request');
 var main = require('../base/main');
 //爬虫初始化
 const spiderInit = (req) => {
-  const url = req.url;
-  const articleCode = req.articleCode;
+  let { url, articleCode, staticBaseUrl, staticBasePath } = req;
   let $;
-  //系统根目录
-  const root = main.root;
   //文章目录
-  const articlePath = `${root}/article/${articleCode}`;
+  const articlePath = `${staticBasePath}/article/${articleCode}`;
   return new Promise(async(resolve, reject) => {
     //创建puppeteer
     const browser = await puppeteer.launch();
