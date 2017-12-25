@@ -18,16 +18,16 @@ const spiderInit = (req) => {
     await page.emulate(iPhone);
     await page.setExtraHTTPHeaders(main.ua);
     await page.goto(url);
-    try{
+    try {
       await page.waitForSelector('._3em8Ej2zWZAW8Nj3xKSF9c', { visible: true, timeout: 2000 });
       await page.click('._3em8Ej2zWZAW8Nj3xKSF9c');
-    }catch(e){
+    } catch (e) {
       console.log(e);
     }
     //创建文章目录
     main.mkArticlePath(articlePath);
     //获取头图
-    await page.waitFor(500);
+    await page.waitForSelector('._2pXgak5v8oUN3AADfbu6QU', { visible: true, timeout: 10000 });
     const minipic = await main.getMinipic(page, '._2pXgak5v8oUN3AADfbu6QU');
     //获取页面所有内容 
     const html = await page.$eval('html', el => el.outerHTML);
@@ -42,7 +42,7 @@ const spiderInit = (req) => {
       title: title,
       desc: title
     }
-    const result = Object.assign(spiderResult.success,{resultData});
+    const result = Object.assign(spiderResult.success, { resultData });
     resolve(result);
     //下载头图
     minipic && main.downMinipic(minipic, articlePath);

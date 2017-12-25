@@ -24,7 +24,7 @@ const spiderInit = (req) => {
     //创建文章目录
     main.mkArticlePath(articlePath);
     //获取头图
-    await page.waitFor(500);
+    await page.waitForSelector('.imgforhtml>img', { visible: true, timeout: 10000 });
     const minipic = await main.getMinipic(page, '.imgforhtml>img');
     //获取页面所有内容 
     const html = await page.$eval('html', el => el.outerHTML);

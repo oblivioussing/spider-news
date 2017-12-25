@@ -59,5 +59,4 @@ const judge = async(req, res, method) => {
   }
 }
 
-
 module.exports = router;
