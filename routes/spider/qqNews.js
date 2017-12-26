@@ -13,7 +13,7 @@ const spiderInit = (req) => {
   const articlePath = `${staticBasePath}/article/${articleCode}`;
   return new Promise(async(resolve, reject) => {
     //创建puppeteer
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage();
     await page.emulate(iPhone);
     await page.setExtraHTTPHeaders(main.ua);
