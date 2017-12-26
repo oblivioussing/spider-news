@@ -59,7 +59,7 @@ module.exports = {
           //保存图片
           const stamp = +new Date();
           request(src).pipe(fs.createWriteStream(`${path}/img/${stamp}.jpg`));
-          $('img').eq(i).attr('src', `${baseUrl}/article/${articleCode}/img/${stamp}.jpg`);
+          $('img').eq(i).attr('src', `/${baseUrl}/article/${articleCode}/img/${stamp}.jpg`);
         }
       }
       resolve();
