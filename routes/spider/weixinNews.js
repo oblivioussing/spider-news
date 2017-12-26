@@ -1,9 +1,6 @@
-var puppeteer = require('puppeteer');
-var devices = require('puppeteer/DeviceDescriptors');
-var iPhone = devices['iPhone 6'];
-var cheerio = require('cheerio');
-var request = require('request');
-var main = require('../base/main');
+const cheerio = require('cheerio');
+const request = require('request');
+const main = require('../base/main');
 //爬虫初始化
 const spiderInit = (req) => {
   let { url, articleCode, staticBaseUrl, staticBasePath } = req;
@@ -12,11 +9,7 @@ const spiderInit = (req) => {
   const articlePath = `${staticBasePath}/article/${articleCode}`;
   return new Promise(async(resolve, reject) => {
     //创建puppeteer
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.emulate(iPhone);
-    await page.setExtraHTTPHeaders(main.ua);
-    await page.goto(url);
+    const { browser, page } = await main.initPuppeteer(url);
     //创建文章目录
     main.mkArticlePath(articlePath);
     //获取头图
@@ -52,8 +45,8 @@ const spiderInit = (req) => {
 var removeAsset = ($) => {
   $('script').each((index, item) => {
     let src = $(item).attr('src');
-    if(src){
-      src.indexOf('main')>=0 && $(item).remove();
+    if (src) {
+      src.indexOf('main') >= 0 && $(item).remove();
     }
   });
 }
