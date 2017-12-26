@@ -10,7 +10,7 @@ const spiderInit = (req) => {
   const articlePath = `${staticBasePath}/article/${articleCode}`;
   return new Promise(async(resolve, reject) => {
     //创建puppeteer
-    const { brower, page } = await main.initPuppeteer();
+    const { brower, page } = await main.initPuppeteer(url);
     try {
       await page.waitForSelector('._3em8Ej2zWZAW8Nj3xKSF9c', { visible: true, timeout: 2000 });
       await page.click('._3em8Ej2zWZAW8Nj3xKSF9c');
