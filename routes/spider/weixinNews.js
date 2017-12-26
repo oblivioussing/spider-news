@@ -1,6 +1,7 @@
 const cheerio = require('cheerio');
 const request = require('request');
 const main = require('../base/main');
+const spiderResult = require('../base/result').spiderResult;
 //爬虫初始化
 const spiderInit = (req) => {
   let { url, articleCode, staticBaseUrl, staticBasePath } = req;
@@ -13,20 +14,25 @@ const spiderInit = (req) => {
     //创建文章目录
     main.mkArticlePath(articlePath);
     //获取头图
-    await page.waitForSelector('img', { visible: true, timeout: 10000 });
-    const minipic = await main.getMinipic(page, 'img');
+    let minipic;
+    try{
+      await page.waitForSelector('img', { visible: true, timeout: 10000 });
+      minipic = await main.getMinipic(page, 'img');
+    }catch(e){
+      console.log('头图获取失败');
+    }
     //获取页面所有内容 
     const html = await page.$eval('html', el => el.outerHTML);
     $ = cheerio.load(html, { decodeEntities: false });
     //返回结果
     let title = $('.rich_media_title').html().trim();
-    const resultCode = dic.success;
     const resultData = {
       minipic: minipic ? `article/${articleCode}/minipic.png` : '',
       title: title,
       desc: title
     }
-    resolve({ resultCode, resultData });
+    const result = Object.assign(spiderResult.success, { resultData });
+    resolve(result);
     //下载头图
     minipic && main.downMinipic(minipic, articlePath);
     //去除部分原文章资源

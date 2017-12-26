@@ -11,6 +11,7 @@ const spiderInit = (req) => {
   //文章目录
   const articlePath = `${staticBasePath}/article/${articleCode}`;
   return new Promise(async(resolve, reject) => {
+    console.log(url);
     //创建puppeteer
     const { browser, page } = await main.initPuppeteer(url);
     //创建文章目录
