@@ -34,7 +34,7 @@ const spiderInit = (req) => {
     //下载图片 
     await main.downImg($, articlePath, staticBaseUrl, articleCode);
     //添加自己的广告
-    main.advert($, '.rich_media_content');
+    main.advert($, '.rich_media_content', staticBaseUrl);
     //写入html
     main.saveHtml($, articlePath);
     //关闭浏览器
