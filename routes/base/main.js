@@ -1,15 +1,23 @@
-var fs = require('fs');
-var request = require('request');
-var core = require('./core');
+const puppeteer = require('puppeteer');
+const devices = require('puppeteer/DeviceDescriptors');
+const iPhone = devices['iPhone 6'];
+const fs = require('fs');
+const request = require('request');
+const core = require('./core');
 
 module.exports = {
   //user-agent
   ua: { 'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0.1; MI 4LTE Build/MMB29M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/46.0.2490.76 Mobile Safari/537.36' },
-  //应该返回的结果集
-  result: {
-    resultCode: '', //业务响应码
-    resultData: {}, //返回数据对象
-    resultMsg: '' //业务响应描述
+  //创建puppeteer实例
+  initPuppeteer: () => {
+    return new Promise(async(resolve, rejct) => {
+      const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+      const page = await browser.newPage();
+      await page.emulate(iPhone);
+      await page.setExtraHTTPHeaders(main.ua);
+      await page.goto(url);
+      resolve({ browser, page });
+    });
   },
   //创建文章目录
   mkArticlePath: (path) => {
@@ -59,7 +67,7 @@ module.exports = {
           //保存图片
           const stamp = +new Date();
           request(src).pipe(fs.createWriteStream(`${path}/img/${stamp}.jpg`));
-          $('img').eq(i).attr('src', `/${baseUrl}/article/${articleCode}/img/${stamp}.jpg`);
+          $('img').eq(i).attr('src', `${baseUrl}/article/${articleCode}/img/${stamp}.jpg`);
         }
       }
       resolve();
@@ -69,12 +77,12 @@ module.exports = {
   advert: ($, el, baseUrl) => {
     let img, script, link;
     img = '<img src="./" class="full-screen none" alt="">'; //全屏图片
-    img += `<img src="/${baseUrl}/article_asset/img/loading.svg" class="gravity-center advert-loading">`; //加载loading
-    img += `<img src="/${baseUrl}/article_asset/img/bottom-fixed.jpg" class="bottom-fixed none" alt="">`; //底部固定的图片
-    script = `<script src="/${baseUrl}/article_asset/js/zepto.min.js"></script>`; //引入zepto
-    script += `<script src="/${baseUrl}/article_asset/js/index.js"></script>`; //引入自己的js
-    link = `<link href="/${baseUrl}/article_asset/css/index.css" rel="stylesheet" type="text/css" />`; //引入自己的css
-    let rootBottom = `<div class="root-bottom"><img src="/${baseUrl}/article_asset/img/bottom.jpg" alt=""></div>`; //最底部的图片
+    img += `<img src="${baseUrl}/article_asset/img/loading.svg" class="gravity-center advert-loading">`; //加载loading
+    img += `<img src="${baseUrl}/article_asset/img/bottom-fixed.jpg" class="bottom-fixed none" alt="">`; //底部固定的图片
+    script = `<script src="${baseUrl}/article_asset/js/zepto.min.js"></script>`; //引入zepto
+    script += `<script src="${baseUrl}/article_asset/js/index.js"></script>`; //引入自己的js
+    link = `<link href="${baseUrl}/article_asset/css/index.css" rel="stylesheet" type="text/css" />`; //引入自己的css
+    let rootBottom = `<div class="root-bottom"><img src="${baseUrl}/article_asset/img/bottom.jpg" alt=""></div>`; //最底部的图片
     $('body').prepend(img);
     $('head').append(script + link);
     $(el).append(rootBottom);

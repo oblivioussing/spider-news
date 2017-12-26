@@ -1,10 +1,7 @@
-var puppeteer = require('puppeteer');
-var devices = require('puppeteer/DeviceDescriptors');
-var iPhone = devices['iPhone 6'];
-var cheerio = require('cheerio');
-var request = require('request');
-var main = require('../base/main');
-var spiderResult = require('../base/result').spiderResult;
+const cheerio = require('cheerio');
+const request = require('request');
+const main = require('../base/main');
+const spiderResult = require('../base/result').spiderResult;
 //爬虫初始化
 const spiderInit = (req) => {
   let { url, articleCode, staticBaseUrl, staticBasePath } = req;
@@ -13,11 +10,7 @@ const spiderInit = (req) => {
   const articlePath = `${staticBasePath}/article/${articleCode}`;
   return new Promise(async(resolve, reject) => {
     //创建puppeteer
-    const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
-    const page = await browser.newPage();
-    await page.emulate(iPhone);
-    await page.setExtraHTTPHeaders(main.ua);
-    await page.goto(url);
+    const { brower, page } = await main.initPuppeteer();
     try {
       await page.waitForSelector('._3em8Ej2zWZAW8Nj3xKSF9c', { visible: true, timeout: 2000 });
       await page.click('._3em8Ej2zWZAW8Nj3xKSF9c');
