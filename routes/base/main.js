@@ -6,7 +6,8 @@ const request = require('request');
 const core = require('./core');
 module.exports = {
   //创建puppeteer实例
-  initPuppeteer: () => {
+  initPuppeteer: (url) => {
+    console.log(url);
     return new Promise(async(resolve, rejct) => {
       const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
       const page = await browser.newPage();
