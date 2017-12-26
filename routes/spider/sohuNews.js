@@ -4,7 +4,7 @@ const main = require('../base/main');
 const spiderResult = require('../base/result').spiderResult;
 //爬虫初始化
 const spiderInit = (req) => {
-  let { url, articleCode, staticBaseUrl, staticBasePath } = req;
+  let { url, articleCode, staticBaseUrl, staticBasePath, mCode } = req;
   let $;
   //文章目录
   const articlePath = `${staticBasePath}/article/${articleCode}`;
@@ -38,7 +38,7 @@ const spiderInit = (req) => {
     //下载图片 
     await main.downImg($, articlePath, staticBaseUrl, articleCode);
     //添加自己的广告
-    main.advert($, '.at-content', staticBaseUrl);
+    main.advert($, '.at-content', staticBaseUrl, mCode);
     //写入html
     main.saveHtml($, articlePath);
     //关闭浏览器
