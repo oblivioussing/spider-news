@@ -4,17 +4,14 @@ const iPhone = devices['iPhone 6'];
 const fs = require('fs');
 const request = require('request');
 const core = require('./core');
-
 module.exports = {
-  //user-agent
-  ua: { 'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0.1; MI 4LTE Build/MMB29M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/46.0.2490.76 Mobile Safari/537.36' },
   //创建puppeteer实例
   initPuppeteer: () => {
     return new Promise(async(resolve, rejct) => {
       const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
       const page = await browser.newPage();
       await page.emulate(iPhone);
-      await page.setExtraHTTPHeaders(main.ua);
+      await page.setUserAgent('Mozilla/5.0 (Linux; Android 6.0.1; MI 4LTE Build/MMB29M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/46.0.2490.76 Mobile Safari/537.36');
       await page.goto(url);
       resolve({ browser, page });
     });
