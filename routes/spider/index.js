@@ -42,7 +42,8 @@ const judge = async(req, res, method) => {
     url: spiderResult.urlNotNull,
     articleCode: spiderResult.acNotNull,
     staticBaseUrl: spiderResult.baseUrlNotNull,
-    staticBasePath: spiderResult.basePathNotNull
+    staticBasePath: spiderResult.basePathNotNull,
+    mCode: spiderResult.mCodeNotNull
   }
   let result;
   for (let item in req) {

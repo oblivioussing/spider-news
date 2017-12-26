@@ -16,7 +16,8 @@ const spiderResult = {
   urlNotNull: { resultCode: '101010', msg: 'url不能为空' },
   acNotNull: { resultCode: '101110', msg: 'articleCode不能为空' },
   baseUrlNotNull: { resultCode: '101210', msg: 'staticBaseUrl不能为空' },
-  basePathNotNull: { resultCode: '101310', msg: 'staticBasePath不能为空' }
+  basePathNotNull: { resultCode: '101310', msg: 'staticBasePath不能为空' },
+  mCodeNotNull: { resultCode: '101410', msg: 'mCode不能为空' }
 }
 
 module.exports = { interfaceResult, spiderResult }

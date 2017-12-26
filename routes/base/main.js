@@ -71,9 +71,9 @@ module.exports = {
     });
   },
   //添加自己的广告
-  advert: ($, el, baseUrl) => {
+  advert: ($, el, baseUrl, mCode) => {
     let img, script, link;
-    img = '<div class="full-screen none"></div>'; //全屏图片
+    img = `<div class="full-screen none" mCode="${mCode}"></div>`; //全屏图片
     img += `<img src="${baseUrl}/article_asset/img/loading.svg" class="gravity-center advert-loading" />`; //加载loading
     img += `<img src="${baseUrl}/article_asset/img/bottom-fixed.jpg" class="bottom-fixed none" alt="" />`; //底部固定的图片
     script = `<script src="${baseUrl}/article_asset/js/zepto.min.js"></script>`; //引入zepto
