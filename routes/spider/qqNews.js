@@ -59,7 +59,7 @@ const spiderInit = (req) => {
     //写入html
     main.saveHtml($, articlePath);
     //关闭浏览器
-    // await browser.close();
+    await browser.close();
   });
 };
 //去除部分原文章资源
