@@ -14,6 +14,15 @@ const spiderInit = (req) => {
     try {
       await page.waitForSelector('._3em8Ej2zWZAW8Nj3xKSF9c', { visible: true, timeout: 2000 });
       await page.click('._3em8Ej2zWZAW8Nj3xKSF9c');
+      await page.waitForSelector('.txp_shadow', { visible: true, timeout: 3000 });
+      await page.click('.txp_shadow');
+      await page.$eval('video', el => {
+        el.addEventListener('error', e => {
+          console.log(e.target.currentSrc);
+        });
+      });
+      let videoUrl = await page.$eval('video', el => el.getAttribute('src'));
+      console.log('videoUrl' + videoUrl);
     } catch (e) {
       console.log(e);
     }
@@ -50,7 +59,7 @@ const spiderInit = (req) => {
     //写入html
     main.saveHtml($, articlePath);
     //关闭浏览器
-    await browser.close();
+    // await browser.close();
   });
 };
 //去除部分原文章资源
@@ -58,7 +67,7 @@ var removeAsset = ($) => {
   $('script').each((index, item) => {
     let src = $(item).attr('src');
     if (src) {
-      src.indexOf('main') >= 0 && $(item).remove();
+      // src.indexOf('main') >= 0 && $(item).remove();
     }
   });
 }
