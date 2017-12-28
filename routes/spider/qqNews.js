@@ -14,15 +14,6 @@ const spiderInit = (req) => {
     try {
       await page.waitForSelector('._3em8Ej2zWZAW8Nj3xKSF9c', { visible: true, timeout: 2000 });
       await page.click('._3em8Ej2zWZAW8Nj3xKSF9c');
-      await page.waitForSelector('.txp_shadow', { visible: true, timeout: 3000 });
-      await page.click('.txp_shadow');
-      await page.$eval('video', el => {
-        el.addEventListener('error', e => {
-          console.log(e.target.currentSrc);
-        });
-      });
-      let videoUrl = await page.$eval('video', el => el.getAttribute('src'));
-      console.log('videoUrl' + videoUrl);
     } catch (e) {
       console.log(e);
     }
@@ -50,12 +41,16 @@ const spiderInit = (req) => {
     minipic && main.downMinipic(minipic, articlePath);
     //去除部分原文章资源
     removeAsset($);
-    //移除最底部的按钮
-    $('._3ggQez72YVSmfcfD8kd7M9').remove();
     //下载图片 
     await main.downImg($, articlePath, staticBaseUrl, articleCode);
-    //添加自己的广告
+    //添加自己的广告和资源引用
     main.advert($, '#root', staticBaseUrl, mCode);
+    //获取视频地址并添加到文章中
+    const videoUrl = await main.getVideoUrl('.txp_shadow', page);
+    if(videoUrl){
+      $('.VbfvcnFQEGQAtVi3h2QEM').css('margin-top','90px');
+      main.insertVideo('._30BC5qV5yH-iDB9Pt290gj>div',$,videoUrl);
+    }
     //写入html
     main.saveHtml($, articlePath);
     //关闭浏览器
@@ -67,9 +62,10 @@ var removeAsset = ($) => {
   $('script').each((index, item) => {
     let src = $(item).attr('src');
     if (src) {
-      // src.indexOf('main') >= 0 && $(item).remove();
+      src.indexOf('main') >= 0 && $(item).remove();
     }
   });
+  $('._3ggQez72YVSmfcfD8kd7M9').remove();
 }
 
 module.exports = spiderInit;
