@@ -107,7 +107,7 @@ module.exports = {
   },
   //插入视频
   insertVideo: (el, $, url) => {
-    const temp = `<video id="my-video" class="video-js vjs-big-play-centered" controls preload="auto" style="width: 100%;height:264px;margin-bottom:264px;" data-setup="{}">
+    const temp = `<video class="video-js vjs-big-play-centered" controls preload="auto" style="width: 100%;height:264px;" data-setup="{}">
                   <source src="${url}">
                 </video>`;
     $(el).append(temp);
