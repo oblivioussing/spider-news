@@ -1,10 +1,12 @@
-var express = require('express');
-var router = express.Router();
-var spiderResult = require('../base/result').spiderResult;
-var qqNews = require('./qqNews');
-var sohuNews = require('./sohuNews');
-var sinaNews = require('./sinaNews');
-var weixinNews = require('./weixinNews');
+const express = require('express');
+const router = express.Router();
+const spiderResult = require('../base/result').spiderResult;
+const qq = require('./qqNews');
+const qqNews = qq.spiderInit;
+const qqVideoUrl = qq.qqVideoUrl;
+const sohuNews = require('./sohuNews');
+const sinaNews = require('./sinaNews');
+const weixinNews = require('./weixinNews');
 
 //腾讯新闻
 router.get('/qqNews', (req, res, next) => {
@@ -12,6 +14,13 @@ router.get('/qqNews', (req, res, next) => {
 });
 router.post('/qqNews', (req, res, next) => {
   judge(req.body, res, qqNews);
+});
+//腾讯视频
+router.get('/qqNewsVideo',(req,res,next)=>{
+  valiUrl(req.query,res,qqVideoUrl);
+});
+router.post('/qqNewsVideo',(req,res,next)=>{
+  valiUrl(req.body,res,qqVideoUrl);
 });
 //搜狐新闻
 router.get('/sohuNews', (req, res, next) => {
@@ -57,6 +66,16 @@ const judge = async(req, res, method) => {
   } else {
     result = await method(req);
     res.send(result);
+  }
+}
+//验证url是否为空
+const valiUrl = async(req, res, method)=>{
+  const url = req.url;
+  if(url){
+    const result = await method(url);
+    res.send(result);
+  }else{
+    res.send(spiderResult.urlNotNull);
   }
 }
 

@@ -30,10 +30,13 @@ const spiderInit = (req) => {
     $('._1PgoakIM6yoElVvNmFVyaK>span').each((index, item) => {
       title += $(item).html();
     });
+    //文章是否有视频
+    const hasVideo = $('video') ? '106' : '';
     const resultData = {
       minipic: minipic ? `article/${articleCode}/minipic.png` : '',
       title: title,
-      desc: title
+      desc: title,
+      hasVideo: hasVideo
     }
     const result = Object.assign(spiderResult.success, { resultData });
     resolve(result);
@@ -47,9 +50,9 @@ const spiderInit = (req) => {
     main.advert($, '#root', staticBaseUrl, mCode);
     //获取视频地址并添加到文章中
     const videoUrl = await main.getVideoUrl('.txp_shadow', page);
-    if(videoUrl){
-      $('.VbfvcnFQEGQAtVi3h2QEM').css('margin-top','90px');
-      main.insertVideo('._30BC5qV5yH-iDB9Pt290gj>div',$,videoUrl);
+    if (videoUrl) {
+      $('.VbfvcnFQEGQAtVi3h2QEM').css('margin-top', '90px');
+      main.insertVideo('._30BC5qV5yH-iDB9Pt290gj>div', $, videoUrl);
     }
     //写入html
     main.saveHtml($, articlePath);
@@ -58,7 +61,7 @@ const spiderInit = (req) => {
   });
 };
 //去除部分原文章资源
-var removeAsset = ($) => {
+const removeAsset = ($) => {
   $('script').each((index, item) => {
     let src = $(item).attr('src');
     if (src) {
@@ -67,5 +70,20 @@ var removeAsset = ($) => {
   });
   $('._3ggQez72YVSmfcfD8kd7M9').remove();
 }
+//获取腾讯视频地址
+const qqVideoUrl = (url) => {
+  return new Promise(async(resolve, reject) => {
+    //创建puppeteer
+    const { browser, page } = await main.initPuppeteer(url);
+    //获取视频地址并添加到文章中
+    const videoUrl = await main.getVideoUrl('.txp_shadow', page);
+    if (videoUrl) {
+      const result = Object.assign(spiderResult.success, { url: videoUrl });
+      resolve(result);
+    } else {
+      resolve(spiderResult.videoUrlNull);
+    }
+  });
+}
 
-module.exports = spiderInit;
+module.exports = { spiderInit, qqVideoUrl };
