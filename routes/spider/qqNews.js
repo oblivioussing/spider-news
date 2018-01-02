@@ -31,7 +31,13 @@ const spiderInit = (req) => {
       title += $(item).html();
     });
     //文章是否有视频
-    const hasVideo = $('video') ? '106' : '';
+    let hasVideo = '';
+    $('script').each((index, item) => {
+      let src = $(item).attr('src');
+      if (src && src.indexOf('video') >= 0) {
+        hasVideo = '106';
+      }
+    });
     const resultData = {
       minipic: minipic ? `article/${articleCode}/minipic.png` : '',
       title: title,
