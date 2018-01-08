@@ -52,7 +52,7 @@ var removeAsset = ($) => {
   $('script').each((index, item) => {
     let src = $(item).attr('src');
     if (src) {
-      src.indexOf('main') >= 0 && $(item).remove();
+      // src.indexOf('main') >= 0 && $(item).remove();
     }
   });
 }

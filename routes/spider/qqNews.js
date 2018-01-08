@@ -1,6 +1,7 @@
 const cheerio = require('cheerio');
 const request = require('request');
 const main = require('../base/main');
+const dic = require('../base/dic');
 const spiderResult = require('../base/result').spiderResult;
 //爬虫初始化
 const spiderInit = (req) => {
@@ -35,7 +36,7 @@ const spiderInit = (req) => {
     $('script').each((index, item) => {
       let src = $(item).attr('src');
       if (src && src.indexOf('video') >= 0) {
-        hasVideo = '106';
+        hasVideo = dic.qqVideoType;
       }
     });
     const resultData = {
@@ -89,6 +90,8 @@ const qqVideoUrl = (url) => {
     } else {
       resolve(spiderResult.videoUrlNull);
     }
+    //关闭浏览器
+    await browser.close();
   });
 }
 
