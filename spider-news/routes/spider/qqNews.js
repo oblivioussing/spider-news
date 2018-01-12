@@ -1,7 +1,6 @@
 const cheerio = require('cheerio');
 const request = require('request');
 const main = require('../base/main');
-const dic = require('../base/dic');
 const spiderResult = require('../base/result').spiderResult;
 //爬虫初始化
 const spiderInit = (req) => {
@@ -9,7 +8,7 @@ const spiderInit = (req) => {
   let $;
   //文章目录
   const articlePath = `${staticBasePath}/article/${articleCode}`;
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async(resolve, reject) => {
     //创建puppeteer
     const { browser, page } = await main.initPuppeteer(url);
     try {
@@ -36,17 +35,14 @@ const spiderInit = (req) => {
     $('script').each((index, item) => {
       let src = $(item).attr('src');
       if (src && src.indexOf('video') >= 0) {
-        hasVideo = dic.qqVideoType;
+        hasVideo = '106';
       }
     });
-    //获取视频地址
-    const videoUrl = hasVideo && await main.getVideoUrl('.txp_shadow', page);
     const resultData = {
       minipic: minipic ? `article/${articleCode}/minipic.png` : '',
       title: title,
       desc: title,
-      hasVideo: hasVideo,
-      url:videoUrl || ''
+      hasVideo: hasVideo
     }
     const result = Object.assign(spiderResult.success, { resultData });
     resolve(result);
@@ -58,11 +54,12 @@ const spiderInit = (req) => {
     await main.downImg($, articlePath, staticBaseUrl, articleCode);
     //添加自己的广告和资源引用
     main.advert($, '#root', staticBaseUrl, mCode);
-    // //获取视频地址并添加到文章中
-    // if (videoUrl) {
-    //   $('.VbfvcnFQEGQAtVi3h2QEM').css('margin-top', '90px');
-    //   main.insertVideo('._30BC5qV5yH-iDB9Pt290gj>div', $, videoUrl);
-    // }
+    //获取视频地址并添加到文章中
+    const videoUrl = await main.getVideoUrl('.txp_shadow', page);
+    if (videoUrl) {
+      $('.VbfvcnFQEGQAtVi3h2QEM').css('margin-top', '90px');
+      main.insertVideo('._30BC5qV5yH-iDB9Pt290gj>div', $, videoUrl);
+    }
     //写入html
     main.saveHtml($, articlePath);
     //关闭浏览器
@@ -80,21 +77,19 @@ const removeAsset = ($) => {
   $('._3ggQez72YVSmfcfD8kd7M9').remove();
 }
 //获取腾讯视频地址
-const refreshQQVideo = (url) => {
-  return new Promise(async (resolve, reject) => {
+const qqVideoUrl = (url) => {
+  return new Promise(async(resolve, reject) => {
     //创建puppeteer
     const { browser, page } = await main.initPuppeteer(url);
     //获取视频地址并添加到文章中
     const videoUrl = await main.getVideoUrl('.txp_shadow', page);
     if (videoUrl) {
-      const result = Object.assign(spiderResult.videoSuccess, { resultData: { url: videoUrl } });
+      const result = Object.assign(spiderResult.success, { url: videoUrl });
       resolve(result);
     } else {
       resolve(spiderResult.videoUrlNull);
     }
-    //关闭浏览器
-    await browser.close();
   });
 }
 
-module.exports = { spiderInit, refreshQQVideo };
+module.exports = { spiderInit, qqVideoUrl };

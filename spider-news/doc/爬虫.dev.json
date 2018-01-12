@@ -1,0 +1,130 @@
+{
+	"id": "06dd86f7-b93e-a7f8-fc17-76de0e66fe3e",
+	"name": "爬虫",
+	"description": "",
+	"order": [
+		"b5e48122-42fa-99f4-c06b-e42d9091d015",
+		"7629f603-6e4b-b6a8-9004-6840564e5a5f"
+	],
+	"folders": [],
+	"folders_order": [],
+	"timestamp": 1513740173785,
+	"owner": "2984761",
+	"public": false,
+	"events": [],
+	"variables": [],
+	"auth": null,
+	"requests": [
+		{
+			"id": "7629f603-6e4b-b6a8-9004-6840564e5a5f",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://uat.51wesharing.com/spider/qqNews",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"events": [],
+			"auth": null,
+			"method": "POST",
+			"collectionId": "06dd86f7-b93e-a7f8-fc17-76de0e66fe3e",
+			"data": [
+				{
+					"key": "url",
+					"value": "https://view.inews.qq.com/a/SPO201712120006731S",
+					"description": "\n",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "articleCode",
+					"value": "0",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "staticBaseUrl",
+					"value": "http://uat.51wesharing.com/scres",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "staticBasePath",
+					"value": "/usr/server/openresty/nginx/html/scres",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "mCode",
+					"value": "f8cc5e9d5bf7c81f015d11c5f912066f",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"name": "http://uat.51wesharing.com/spider/qqNews",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1515399934707,
+			"version": 2,
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null
+		},
+		{
+			"folder": null,
+			"id": "b5e48122-42fa-99f4-c06b-e42d9091d015",
+			"name": "保存微信文章",
+			"dataMode": "params",
+			"data": [
+				{
+					"key": "url",
+					"value": "https://mp.weixin.qq.com/s?src=11&timestamp=1513740601&ver=585&signature=xSZ0WwRThpty-NFPcnHj*z2Ed6-M9qNtEvpNl5A6y2W7cqRKDCaL07IQgK0QgW58x5BakANEfh9CpbT0avrSTcjvhYB*xZjlzXLFi*pIUy053TVCxtenWDd5i7PxIoQ4&new=1",
+					"description": "抓取的文章链接",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "articleCode",
+					"value": "C16EAE1A83D9F352",
+					"description": "文章编号",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "authorName",
+					"value": "authorName",
+					"description": "作者",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"auth": null,
+			"events": null,
+			"rawModeData": null,
+			"descriptionFormat": null,
+			"description": null,
+			"variables": null,
+			"headers": "",
+			"method": "POST",
+			"pathVariables": {},
+			"url": "http://localhost:8889/devcxsspider/spd/swand",
+			"queryParams": [],
+			"headerData": [],
+			"pathVariableData": [],
+			"collectionId": "06dd86f7-b93e-a7f8-fc17-76de0e66fe3e",
+			"currentHelper": null,
+			"helperAttributes": null
+		}
+	]
+}

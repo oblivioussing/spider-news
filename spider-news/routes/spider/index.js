@@ -3,7 +3,7 @@ const router = express.Router();
 const spiderResult = require('../base/result').spiderResult;
 const qq = require('./qqNews');
 const qqNews = qq.spiderInit;
-const refreshQQVideo = qq.refreshQQVideo;
+const qqVideoUrl = qq.qqVideoUrl;
 const sohuNews = require('./sohuNews');
 const sinaNews = require('./sinaNews');
 const weixinNews = require('./weixinNews');
@@ -17,10 +17,10 @@ router.post('/qqNews', (req, res, next) => {
 });
 //腾讯视频
 router.get('/refreshQQVideo',(req,res,next)=>{
-  valiUrl(req.query,res,refreshQQVideo);
+  valiUrl(req.query,res,qqVideoUrl);
 });
 router.post('/refreshQQVideo',(req,res,next)=>{
-  valiUrl(req.body,res,refreshQQVideo);
+  valiUrl(req.body,res,qqVideoUrl);
 });
 //搜狐新闻
 router.get('/sohuNews', (req, res, next) => {
