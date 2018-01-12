@@ -9,7 +9,7 @@ const spiderInit = (req) => {
   let $;
   //文章目录
   const articlePath = `${staticBasePath}/article/${articleCode}`;
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     //创建puppeteer
     const { browser, page } = await main.initPuppeteer(url);
     try {
@@ -79,13 +79,13 @@ const removeAsset = ($) => {
 }
 //获取腾讯视频地址
 const qqVideoUrl = (url) => {
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     //创建puppeteer
     const { browser, page } = await main.initPuppeteer(url);
     //获取视频地址并添加到文章中
     const videoUrl = await main.getVideoUrl('.txp_shadow', page);
     if (videoUrl) {
-      const result = Object.assign(spiderResult.success, { url: videoUrl });
+      const result = Object.assign(spiderResult.success, { resultData: { url: videoUrl } });
       resolve(result);
     } else {
       resolve(spiderResult.videoUrlNull);

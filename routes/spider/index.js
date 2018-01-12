@@ -16,7 +16,7 @@ router.post('/qqNews', (req, res, next) => {
   judge(req.body, res, qqNews);
 });
 //腾讯视频
-router.get('/qqNewsVideo',(req,res,next)=>{
+router.get('/refreshQQVideo',(req,res,next)=>{
   valiUrl(req.query,res,qqVideoUrl);
 });
 router.post('/qqNewsVideo',(req,res,next)=>{
