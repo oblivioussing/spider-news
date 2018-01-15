@@ -13,8 +13,9 @@ const spiderInit = (req) => {
     //创建puppeteer
     const { browser, page } = await main.initPuppeteer(url);
     try {
-      await page.waitForSelector('._3em8Ej2zWZAW8Nj3xKSF9c', { visible: true, timeout: 2000 });
-      await page.click('._3em8Ej2zWZAW8Nj3xKSF9c');
+      await page.waitForSelector('._1fdJgE9col8hzvfrzqK_ig', {visible: true, timeout: 2000 });
+      await page.waitFor(300);
+      await page.click('._1fdJgE9col8hzvfrzqK_ig');
     } catch (e) {
       console.log(e);
     }
@@ -46,7 +47,7 @@ const spiderInit = (req) => {
       title: title,
       desc: title,
       hasVideo: hasVideo,
-      url:videoUrl || ''
+      url: videoUrl || ''
     }
     const result = Object.assign(spiderResult.success, { resultData });
     resolve(result);
@@ -66,7 +67,7 @@ const spiderInit = (req) => {
     //写入html
     main.saveHtml($, articlePath);
     //关闭浏览器
-    await browser.close();
+    // await browser.close();
   });
 };
 //去除部分原文章资源
@@ -77,7 +78,8 @@ const removeAsset = ($) => {
       src.indexOf('main') >= 0 && $(item).remove();
     }
   });
-  $('._3ggQez72YVSmfcfD8kd7M9').remove();
+  $('._16fUG4H0ZbiY3-cmG3DXES').remove();
+  $('._4l9HCryiEbUHtuIiH7iz').remove();
 }
 //获取腾讯视频地址
 const refreshQQVideo = (url) => {
