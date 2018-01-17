@@ -13,7 +13,7 @@ const spiderInit = (req) => {
     //创建puppeteer
     const { browser, page } = await main.initPuppeteer(url);
     try {
-      await page.waitForSelector('._1fdJgE9col8hzvfrzqK_ig', {visible: true, timeout: 2000 });
+      await page.waitForSelector('._1fdJgE9col8hzvfrzqK_ig', { visible: true, timeout: 2000 });
       await page.waitFor(300);
       await page.click('._1fdJgE9col8hzvfrzqK_ig');
     } catch (e) {
@@ -59,17 +59,14 @@ const spiderInit = (req) => {
     await main.downImg($, articlePath, staticBaseUrl, articleCode);
     //添加自己的广告和资源引用
     main.advert($, '#root', staticBaseUrl, mCode);
-    // //获取视频地址并添加到文章中
-    // if (videoUrl) {
-    //   $('.VbfvcnFQEGQAtVi3h2QEM').css('margin-top', '90px');
-    //   main.insertVideo('._30BC5qV5yH-iDB9Pt290gj>div', $, videoUrl);
-    // }
     //写入html
     main.saveHtml($, articlePath);
     //关闭浏览器
     await browser.close();
   });
 };
+
+
 //去除部分原文章资源
 const removeAsset = ($) => {
   $('script').each((index, item) => {
@@ -81,6 +78,8 @@ const removeAsset = ($) => {
   $('._16fUG4H0ZbiY3-cmG3DXES').remove();
   $('._4l9HCryiEbUHtuIiH7iz').remove();
 }
+
+
 //获取腾讯视频地址
 const refreshQQVideo = (url) => {
   return new Promise(async (resolve, reject) => {
@@ -98,5 +97,6 @@ const refreshQQVideo = (url) => {
     await browser.close();
   });
 }
+
 
 module.exports = { spiderInit, refreshQQVideo };

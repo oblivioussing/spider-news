@@ -7,8 +7,8 @@ const core = require('./core');
 module.exports = {
   //创建puppeteer实例
   initPuppeteer: (url) => {
-    return new Promise(async(resolve, rejct) => {
-      const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+    return new Promise(async (resolve, rejct) => {
+      const browser = await puppeteer.launch({ headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
       const page = await browser.newPage();
       await page.emulate(iPhone);
       await page.goto(url);
@@ -19,12 +19,14 @@ module.exports = {
   mkArticlePath: (path) => {
     if (!fs.existsSync(path)) {
       fs.mkdirSync(path); //文章目录
+    }
+    if(!fs.existsSync(path+'/img')){
       fs.mkdirSync(path + '/img'); //图片目录
     }
   },
   //获取头图
   getMinipic: (page, img) => {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const url = await page.$$eval(img, el => {
         let src;
         for (let i = 0; i < el.length; i++) {
@@ -51,7 +53,7 @@ module.exports = {
   },
   //下载图片
   downImg: ($, path, baseUrl, articleCode, http = 'https:') => {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const len = $('img').length;
       for (let i = 0; i < len; i++) {
         await core.sleep(10);
@@ -87,7 +89,7 @@ module.exports = {
   },
   //获取视频地址
   getVideoUrl: (el, page) => {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         await page.waitForSelector(el, { visible: true, timeout: 3000 });
         await page.click(el);
