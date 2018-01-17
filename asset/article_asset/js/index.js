@@ -1,6 +1,6 @@
 //类型 100-微享；101-微信；102-搜狐；103-新浪；104-网易；105-凤凰；106-腾讯视频
 $(function() {
- var host = 'http://www.51wesharing.com/';
+ var host = 'http://www.51wesharing.com';
  var $body = $('body');
  var $root = $('#root');
  var $loading = $('.advert-loading');
@@ -13,18 +13,18 @@ $(function() {
    //默认隐藏页面内容,显示loading
    $body.addClass('hidden');
    $root.addClass('none');
-   if (ret && ret.state === 10) {
-     var data = ret.data;
-     $loading.addClass('none');
-     $fullScreen.css({
-       'background': 'url(' + host + data.position2 + ')',
-       'background-size': 'cover',
-       'background-position': 'center center',
-       'background-repeat': 'no-repeat'
-     });
-     $fullScreen.removeClass('none');
-     $bottomFixed.attr('src', host + data.position1);
-     $rootImg.attr('src', host + data.position3);
+   if (ret && ret.state == '10') {
+    //  var data = ret.data;
+    //  $loading.addClass('none');
+    //  $fullScreen.css({
+    //    'background': 'url(' + host + data.position2 + ')',
+    //    'background-size': 'cover',
+    //    'background-position': 'center center',
+    //    'background-repeat': 'no-repeat'
+    //  });
+    //  $fullScreen.removeClass('none');
+    //  $bottomFixed.attr('src', host + data.position1);
+    //  $rootImg.attr('src', host + data.position3);
      //判断是否是视频
      isVideo(data);
    } else {
@@ -33,7 +33,7 @@ $(function() {
      $rootImg.remove();
    }
    //3秒后页面正常显示
-   delay();
+  //  delay();
  }, {
    mCode: mCode
  });

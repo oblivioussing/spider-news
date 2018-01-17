@@ -5,7 +5,7 @@ const dic = require('../base/dic');
 const spiderResult = require('../base/result').spiderResult;
 //爬虫初始化
 const spiderInit = (req) => {
-  let { url, articleCode, staticBaseUrl, staticBasePath, articleContentPath, mCode } = req;
+  let { url, articleCode, staticBaseUrl, staticBasePath, articleContentPath, mCode, articleName } = req;
   let $;
   //文章目录
   const articlePath = `${staticBasePath}${articleContentPath}/${articleCode}`;
@@ -43,7 +43,7 @@ const spiderInit = (req) => {
     //获取视频地址
     const videoUrl = hasVideo && await main.getVideoUrl('.txp_shadow', page);
     const resultData = {
-      minipic: minipic ? `${articleContentPath}/${articleCode}/minipic.png` : '',
+      miniPic: minipic ? `${articleContentPath}/${articleCode}/minipic.png` : '',
       title: title,
       desc: title,
       hasVideo: hasVideo,
@@ -61,7 +61,7 @@ const spiderInit = (req) => {
     //添加自己的广告和资源引用
     main.advert($, '#root', staticBaseUrl, mCode);
     //写入html
-    main.saveHtml($, articlePath);
+    main.saveHtml($, articlePath, articleName);
     //关闭浏览器
     await browser.close();
   });
@@ -76,6 +76,7 @@ const removeAsset = ($) => {
   });
   $('._16fUG4H0ZbiY3-cmG3DXES').remove();
   $('._4l9HCryiEbUHtuIiH7iz').remove();
+  $('._3ggQez72YVSmfcfD8kd7M9').remove();
 }
 //获取腾讯视频地址
 const refreshQQVideo = (url) => {

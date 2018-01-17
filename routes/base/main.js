@@ -17,12 +17,8 @@ module.exports = {
   },
   //创建文章目录
   mkArticlePath: (path) => {
-    if (!fs.existsSync(path)) {
-      fs.mkdirSync(path); //文章目录
-    }
-    if(!fs.existsSync(path+'/img')){
-      fs.mkdirSync(path + '/img'); //图片目录
-    }
+    core.mkdirsSync(path);
+    core.mkdirsSync(path + '/img');
   },
   //获取头图
   getMinipic: (page, img) => {
@@ -73,19 +69,19 @@ module.exports = {
   },
   //添加自己的广告和资源引用
   advert: ($, el, baseUrl, mCode) => {
-    let img, script, link;
+    let img = '', script = '', link = '';
     link = `<link href="${baseUrl}/article_asset/css/index.css" rel="stylesheet" type="text/css" />`; //引入自己的css
     link += `<link href="${baseUrl}/article_asset/css/video-js.css" rel="stylesheet" type="text/css" />`; //引入videojs.css
     script = `<script src="${baseUrl}/article_asset/js/zepto.min.js"></script>`; //引入zepto
     script += `<script src="${baseUrl}/article_asset/js/index.js"></script>`; //引入自己的js
     script += `<script src="${baseUrl}/article_asset/js/video.js"></script>`; //引入自己的videojs
-    img = `<div class="full-screen none" mCode="${mCode}"></div>`; //全屏图片
-    img += `<img src="${baseUrl}/article_asset/img/loading.svg" class="gravity-center advert-loading" />`; //加载loading
-    img += `<img src="${baseUrl}/article_asset/img/bottom-fixed.jpg" class="bottom-fixed none" alt="" />`; //底部固定的图片
-    let rootBottom = `<div class="root-bottom"><img src="${baseUrl}/article_asset/img/bottom.jpg" alt=""></div>`; //最底部的图片
-    $('body').prepend(img);
+    // img = `<div class="full-screen none" mCode="${mCode}"></div>`; //全屏图片
+    // img += `<img src="${baseUrl}/article_asset/img/loading.svg" class="gravity-center advert-loading" />`; //加载loading
+    // img += `<img src="${baseUrl}/article_asset/img/bottom-fixed.jpg" class="bottom-fixed none" alt="" />`; //底部固定的图片
+    // let rootBottom = `<div class="root-bottom"><img src="${baseUrl}/article_asset/img/bottom.jpg" alt=""></div>`; //最底部的图片
+    // $('body').prepend(img);
     $('head').append(link + script);
-    $(el).append(rootBottom);
+    // $(el).append(rootBottom);
   },
   //获取视频地址
   getVideoUrl: (el, page) => {
@@ -115,7 +111,7 @@ module.exports = {
     $(el).append(temp);
   },
   //写入html
-  saveHtml: ($, path) => {
-    fs.writeFileSync(`${path}/index.html`, $.html());
+  saveHtml: ($, path, articleName) => {
+    fs.writeFileSync(`${path}/${articleName}`, $.html());
   }
 }
