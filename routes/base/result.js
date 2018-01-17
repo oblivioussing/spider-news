@@ -15,7 +15,7 @@ const spiderResult = {
   success: { resultCode: interfaceResult.success.resultCode, resultMsg: '文章抓取成功' },
   videoSuccess: { resultCode: interfaceResult.success.resultCode, resultMsg: '视频抓取成功' },
   urlNotNull: { resultCode: '101010', resultMsg: 'url不能为空' },
-  acNotNull: { resultCode: '101110', resultMsg: 'articleCode不能为空' },
+  acNotNull: { resultCode: '101110', resultMsg: 'articleId不能为空' },
   baseUrlNotNull: { resultCode: '101210', resultMsg: 'staticBaseUrl不能为空' },
   basePathNotNull: { resultCode: '101310', resultMsg: 'staticBasePath不能为空' },
   mCodeNotNull: { resultCode: '101410', resultMsg: 'mCode不能为空' },
