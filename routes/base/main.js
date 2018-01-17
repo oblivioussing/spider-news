@@ -52,7 +52,7 @@ module.exports = {
     }
   },
   //下载图片
-  downImg: ($, path, baseUrl, articleCode, http = 'https:') => {
+  downImg: ($, path, baseUrl, contentCodePath, http = 'https:') => {
     return new Promise(async (resolve, reject) => {
       const len = $('img').length;
       for (let i = 0; i < len; i++) {
@@ -65,7 +65,7 @@ module.exports = {
           //保存图片
           const stamp = +new Date();
           request(src).pipe(fs.createWriteStream(`${path}/img/${stamp}.jpg`));
-          $('img').eq(i).attr('src', `${baseUrl}/article/${articleCode}/img/${stamp}.jpg`);
+          $('img').eq(i).attr('src', `${baseUrl}${contentCodePath}/img/${stamp}.jpg`);
         }
       }
       resolve();

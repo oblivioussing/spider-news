@@ -5,10 +5,10 @@ const dic = require('../base/dic');
 const spiderResult = require('../base/result').spiderResult;
 //爬虫初始化
 const spiderInit = (req) => {
-  let { url, articleCode, staticBaseUrl, staticBasePath, mCode } = req;
+  let { url, articleCode, staticBaseUrl, staticBasePath, articleContentPath, mCode } = req;
   let $;
   //文章目录
-  const articlePath = `${staticBasePath}/article/${articleCode}`;
+  const articlePath = `${staticBasePath}${articleContentPath}/${articleCode}`;
   return new Promise(async (resolve, reject) => {
     //创建puppeteer
     const { browser, page } = await main.initPuppeteer(url);
@@ -17,7 +17,7 @@ const spiderInit = (req) => {
       await page.waitFor(300);
       await page.click('._1fdJgE9col8hzvfrzqK_ig');
     } catch (e) {
-      console.log(e);
+      console.log('查看全文按钮不存在');
     }
     //创建文章目录
     main.mkArticlePath(articlePath);
@@ -43,7 +43,7 @@ const spiderInit = (req) => {
     //获取视频地址
     const videoUrl = hasVideo && await main.getVideoUrl('.txp_shadow', page);
     const resultData = {
-      minipic: minipic ? `article/${articleCode}/minipic.png` : '',
+      minipic: minipic ? `${articleContentPath}/${articleCode}/minipic.png` : '',
       title: title,
       desc: title,
       hasVideo: hasVideo,
@@ -56,7 +56,8 @@ const spiderInit = (req) => {
     //去除部分原文章资源
     removeAsset($);
     //下载图片 
-    await main.downImg($, articlePath, staticBaseUrl, articleCode);
+    const contentCodePath = articleContentPath + '/' + articleCode;
+    await main.downImg($, articlePath, staticBaseUrl, contentCodePath);
     //添加自己的广告和资源引用
     main.advert($, '#root', staticBaseUrl, mCode);
     //写入html
@@ -65,8 +66,6 @@ const spiderInit = (req) => {
     await browser.close();
   });
 };
-
-
 //去除部分原文章资源
 const removeAsset = ($) => {
   $('script').each((index, item) => {
@@ -78,8 +77,6 @@ const removeAsset = ($) => {
   $('._16fUG4H0ZbiY3-cmG3DXES').remove();
   $('._4l9HCryiEbUHtuIiH7iz').remove();
 }
-
-
 //获取腾讯视频地址
 const refreshQQVideo = (url) => {
   return new Promise(async (resolve, reject) => {

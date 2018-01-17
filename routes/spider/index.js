@@ -49,9 +49,10 @@ router.post('/weixinNews', (req, res, next) => {
 const judge = async(req, res, method) => {
   let verifyMap = {
     url: spiderResult.urlNotNull,
-    articleId: spiderResult.acNotNull,
+    articleCode: spiderResult.acNotNull,
     staticBaseUrl: spiderResult.baseUrlNotNull,
     staticBasePath: spiderResult.basePathNotNull,
+    articleContentPath: spiderResult.acPathNotNull,
     mCode: spiderResult.mCodeNotNull
   }
   let result;

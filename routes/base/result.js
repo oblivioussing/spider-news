@@ -19,7 +19,8 @@ const spiderResult = {
   baseUrlNotNull: { resultCode: '101210', resultMsg: 'staticBaseUrl不能为空' },
   basePathNotNull: { resultCode: '101310', resultMsg: 'staticBasePath不能为空' },
   mCodeNotNull: { resultCode: '101410', resultMsg: 'mCode不能为空' },
-  videoUrlNull: { resultCode: '101511', resultMsg: '视频地址为空' }
+  videoUrlNull: { resultCode: '101511', resultMsg: '视频地址为空' },
+  acPathNotNull: { resultCode: '101610', resultMsg: 'articleContentPath不能为空' }
 }
 
 module.exports = { interfaceResult, spiderResult }
