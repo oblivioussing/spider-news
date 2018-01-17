@@ -12,15 +12,15 @@ module.exports = {
   },
   //同步创建文件夹
   mkdirsSync: (dirname) => {
-    mkdirs(dirname);
+    mkdirsingSync(dirname);
   }
 }
 //同步创建文件夹
-const mkdirs = (dirname) => {
+const mkdirsingSync = (dirname) => {
   if (fs.existsSync(dirname)) {
     return true;
   } else {
-    if (mkdirs(path.dirname(dirname))) {
+    if (mkdirsingSync(path.dirname(dirname))) {
       fs.mkdirSync(dirname);
       return true;
     }

@@ -77,6 +77,8 @@ const removeAsset = ($) => {
   $('._16fUG4H0ZbiY3-cmG3DXES').remove();
   $('._4l9HCryiEbUHtuIiH7iz').remove();
   $('._3ggQez72YVSmfcfD8kd7M9').remove();
+  $('._2XdhHtUndG-_UTSx-9hmP0 .Nfgz6aIyFCi3vZUoFGKEr').last().remove();
+  $('._1mJz-h6XxT4oEV_s1aKlCK').last().remove();
 }
 //获取腾讯视频地址
 const refreshQQVideo = (url) => {

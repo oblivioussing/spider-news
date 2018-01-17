@@ -11,8 +11,8 @@ $(function() {
  //发起请求
  request('twxm/sys/gam', function(ret) {
    //默认隐藏页面内容,显示loading
-   $body.addClass('hidden');
-   $root.addClass('none');
+  //  $body.addClass('hidden');
+  //  $root.addClass('none');
    if (ret && ret.state == '10') {
     //  var data = ret.data;
     //  $loading.addClass('none');
@@ -28,9 +28,9 @@ $(function() {
      //判断是否是视频
      isVideo(data);
    } else {
-     $fullScreen.remove();
-     $bottomFixed.remove();
-     $rootImg.remove();
+    //  $fullScreen.remove();
+    //  $bottomFixed.remove();
+    //  $rootImg.remove();
    }
    //3秒后页面正常显示
   //  delay();
