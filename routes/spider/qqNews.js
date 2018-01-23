@@ -33,21 +33,27 @@ const spiderInit = (req) => {
       title += $(item).html();
     });
     //文章是否有视频
-    let hasVideo = '';
+    let tempMaterialType = '';
     $('script').each((index, item) => {
       let src = $(item).attr('src');
       if (src && src.indexOf('video') >= 0) {
-        hasVideo = dic.qqVideoType;
+        tempMaterialType = dic.qqVideoType;
       }
     });
     //获取视频地址
-    const videoUrl = hasVideo && await main.getVideoUrl('.txp_shadow', page);
+    const videoUrl = tempMaterialType && await main.getVideoUrl('.txp_shadow', page);
     const resultData = {
-      miniPic: minipic ? `${articleContentPath}/${articleCode}/minipic.png` : '',
+      miniPic: minipic ? `minipic.jpg` : '',
       title: title,
       desc: title,
-      hasVideo: hasVideo,
-      url: videoUrl || ''
+      hasTempMaterial: tempMaterialType ? 1 : 0, //是否有临时素材 0-没有,1-有
+      tempMaterialList: [
+        {
+          tempMaterialKey: 'myVideo',  //临时资源的key
+          tempMaterialValue: videoUrl, //临时资源的value 
+          tempMaterialType: tempMaterialType, //临时资源的处理方式
+        }
+      ] //临时素材列表
     }
     const result = Object.assign(spiderResult.success, { resultData });
     resolve(result);
@@ -60,6 +66,11 @@ const spiderInit = (req) => {
     await main.downImg($, articlePath, staticBaseUrl, contentCodePath);
     //添加自己的广告和资源引用
     main.advert($, '#root', staticBaseUrl, mCode);
+    // //获取视频地址并添加到文章中
+    if (resultData.hasTempMaterial === 1) {
+      $('.VbfvcnFQEGQAtVi3h2QEM').css('margin-top', '90px');
+      main.insertVideo('._2Md_fWtIIRVnvz6VwcxGAU', $, videoUrl);
+    }
     //写入html
     main.saveHtml($, articlePath, articleName);
     //关闭浏览器
@@ -78,7 +89,10 @@ const removeAsset = ($) => {
   $('._4l9HCryiEbUHtuIiH7iz').remove();
   $('._3ggQez72YVSmfcfD8kd7M9').remove();
   $('._2XdhHtUndG-_UTSx-9hmP0 .Nfgz6aIyFCi3vZUoFGKEr').last().remove();
-  $('._1mJz-h6XxT4oEV_s1aKlCK').last().remove();
+  $('._2Dlp4X_qspqflZByGQZq_a').remove();
+  $('.txp_player').remove();
+  $('.H78at0CxqbE2qpdrpBzV0').remove();
+  $('._1mJz-h6XxT4oEV_s1aKlCK>a').remove();
 }
 //获取腾讯视频地址
 const refreshQQVideo = (url) => {

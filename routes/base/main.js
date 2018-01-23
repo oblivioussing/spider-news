@@ -62,6 +62,7 @@ module.exports = {
           const stamp = +new Date();
           request(src).pipe(fs.createWriteStream(`${path}/img/${stamp}.jpg`));
           $('img').eq(i).attr('src', `${baseUrl}${contentCodePath}/img/${stamp}.jpg`);
+          $('img').eq(i).attr('data-src', `${src}`);
         }
       }
       resolve();
@@ -73,13 +74,13 @@ module.exports = {
     link = `<link href="${baseUrl}/article_asset/css/index.css" rel="stylesheet" type="text/css" />`; //引入自己的css
     link += `<link href="${baseUrl}/article_asset/css/video-js.css" rel="stylesheet" type="text/css" />`; //引入videojs.css
     script = `<script src="${baseUrl}/article_asset/js/zepto.min.js"></script>`; //引入zepto
-    script += `<script src="${baseUrl}/article_asset/js/index.js"></script>`; //引入自己的js
+    script += `<script src="${baseUrl}/article_asset/js/index.js?v=1"></script>`; //引入自己的js
     script += `<script src="${baseUrl}/article_asset/js/video.js"></script>`; //引入自己的videojs
-    // img = `<div class="full-screen none" mCode="${mCode}"></div>`; //全屏图片
+    img = `<div class="full-screen none" mCode="${mCode}"></div>`; //全屏图片
     // img += `<img src="${baseUrl}/article_asset/img/loading.svg" class="gravity-center advert-loading" />`; //加载loading
     // img += `<img src="${baseUrl}/article_asset/img/bottom-fixed.jpg" class="bottom-fixed none" alt="" />`; //底部固定的图片
     // let rootBottom = `<div class="root-bottom"><img src="${baseUrl}/article_asset/img/bottom.jpg" alt=""></div>`; //最底部的图片
-    // $('body').prepend(img);
+    $('body').prepend(img);
     $('head').append(link + script);
     // $(el).append(rootBottom);
   },
@@ -99,7 +100,7 @@ module.exports = {
         });
         resolve(videoUrl);
       } catch (e) {
-        console.log(e);
+        console.log('视频获取失败');
       }
     });
   },

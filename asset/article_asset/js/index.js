@@ -9,12 +9,12 @@ $(function() {
  var $rootImg = $('.root-bottom>img');
  var mCode = $fullScreen.attr('mCode');
  //发起请求
- request('twxm/sys/gam', function(ret) {
+ request('/twxm/sys/gam', function(ret) {
    //默认隐藏页面内容,显示loading
   //  $body.addClass('hidden');
   //  $root.addClass('none');
    if (ret && ret.state == '10') {
-    //  var data = ret.data;
+     var data = ret.data;
     //  $loading.addClass('none');
     //  $fullScreen.css({
     //    'background': 'url(' + host + data.position2 + ')',
@@ -37,10 +37,17 @@ $(function() {
  }, {
    mCode: mCode
  });
+ //图片错误处理
+ $('img').error(function(){
+   $(this).attr('src',$(this).attr('data-src'));
+ });
  //文章是否包含视频
  function isVideo(data) {
-   if (data.type === '106') {
-     $('#myVideo').attr('src', data.masterMediaContent);
+   if (data.hasTempMaterial=='1') {
+    var videoList = data.tempMaterialLiast.lenght;
+    videoList.forEach(function(item){
+      $('#'+item.tempMaterialKey).attr('src', item.tempMaterialValue);
+    });
    }
  }
  //3秒后页面正常显示

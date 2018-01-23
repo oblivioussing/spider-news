@@ -46,13 +46,13 @@ router.post('/weixinNews', (req, res, next) => {
 //验证参数是否为空
 const judge = async(req, res, method) => {
   let verifyMap = {
-    url: spiderResult.urlNotNull,
-    articleCode: spiderResult.acNotNull,
+    url: spiderResult.urlNotNull, //文章地址
+    articleCode: spiderResult.acNotNull, //文章编号
     staticBaseUrl: spiderResult.baseUrlNotNull, //静态程序和资源根url(远程的)
     staticBasePath: spiderResult.basePathNotNull, //静态程序和资源根路径(盘符路径)
     articleContentPath: spiderResult.acPathNotNull, //文章相对路径(起始路径:静态程序和资源路径)
-    mCode: spiderResult.mCodeNotNull,
-    articleName:spiderResult.articleNameNotNull
+    memberCode: spiderResult.mCodeNotNull, //会员id
+    articleName:spiderResult.articleNameNotNull //文章名
   }
   let result;
   for (let item in req) {
