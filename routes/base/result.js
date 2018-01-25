@@ -13,7 +13,7 @@ const interfaceResult = {
 // 例如:101010-url不能为空  10 爬虫模块、 10 抓取、 10 url不能为空
 const spiderResult = {
   success: { resultCode: interfaceResult.success.resultCode, resultMsg: '文章抓取成功' },
-  videoSuccess: { resultCode: interfaceResult.success.resultCode, resultMsg: '视频抓取成功' },
+  videoSuccess: { resultCode: interfaceResult.success.resultCode, resultMsg: '刷新临时素材成功' },
   urlNotNull: { resultCode: '101010', resultMsg: 'url不能为空' },
   acNotNull: { resultCode: '101110', resultMsg: 'articleId不能为空' },
   baseUrlNotNull: { resultCode: '101210', resultMsg: 'staticBaseUrl不能为空' },

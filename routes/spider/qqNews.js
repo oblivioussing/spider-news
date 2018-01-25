@@ -64,9 +64,11 @@ const spiderInit = (req) => {
     //下载图片 
     const contentCodePath = articleContentPath + '/' + articleCode;
     await main.downImg($, articlePath, staticBaseUrl, contentCodePath);
+    //防盗链处理
+    // await main.guard($);
     //添加自己的广告和资源引用
     main.advert($, '#root', staticBaseUrl, mCode);
-    // //获取视频地址并添加到文章中
+    //获取视频地址并添加到文章中
     if (resultData.hasTempMaterial === 1) {
       $('.VbfvcnFQEGQAtVi3h2QEM').css('margin-top', '90px');
       main.insertVideo('._2Md_fWtIIRVnvz6VwcxGAU', $, videoUrl);
@@ -95,14 +97,21 @@ const removeAsset = ($) => {
   $('._1mJz-h6XxT4oEV_s1aKlCK>a').remove();
 }
 //获取腾讯视频地址
-const refreshQQVideo = (url) => {
+const refreshQQtm = (url) => {
   return new Promise(async (resolve, reject) => {
     //创建puppeteer
     const { browser, page } = await main.initPuppeteer(url);
     //获取视频地址并添加到文章中
     const videoUrl = await main.getVideoUrl('.txp_shadow', page);
     if (videoUrl) {
-      const result = Object.assign(spiderResult.videoSuccess, { resultData: { url: videoUrl } });
+      const tempMaterialList = [
+        {
+          tempMaterialKey: 'myVideo',  //临时资源的key
+          tempMaterialValue: videoUrl, //临时资源的value 
+          tempMaterialType: dic.qqVideoType, //临时资源的处理方式
+        }
+      ]
+      const result = Object.assign(spiderResult.videoSuccess, { resultData: { tempMaterialList } });
       resolve(result);
     } else {
       resolve(spiderResult.videoUrlNull);
@@ -113,4 +122,4 @@ const refreshQQVideo = (url) => {
 }
 
 
-module.exports = { spiderInit, refreshQQVideo };
+module.exports = { spiderInit, refreshQQtm };

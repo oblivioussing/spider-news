@@ -68,6 +68,10 @@ module.exports = {
       resolve();
     });
   },
+  //防盗链处理
+  guard: ($) => {
+
+  },
   //添加自己的广告和资源引用
   advert: ($, el, baseUrl, mCode) => {
     let img = '', script = '', link = '';
@@ -100,6 +104,7 @@ module.exports = {
         });
         resolve(videoUrl);
       } catch (e) {
+        reject();
         console.log('视频获取失败');
       }
     });
