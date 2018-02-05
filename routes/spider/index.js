@@ -1,5 +1,4 @@
 const express = require('express');
-const superagent = require('superagent');
 const router = express.Router();
 const spiderResult = require('../base/result').spiderResult;
 const qq = require('./qqNews');
@@ -9,27 +8,7 @@ const sohuNews = require('./sohuNews');
 const sinaNews = require('./sinaNews');
 const weixinNews = require('./weixinNews');
 
-//防盗链处理
-router.get('/pic/*', (req, res, next) => {
-  const originalUrl = req.originalUrl;
-  let url = originalUrl.match(/spider\/pic\/(\S*)/)[1];
-  console.log(url);
-  if (url) {
-    superagent.get(url)
-      .set('Referer', '')
-      .set('User-Agent', '')
-      .end(function (err, result) {
-        if (err) {
-          res.send('');
-        } else {
-          res.writeHead(200, { 'Content-Type': 'image/jpg' });
-          res.end(result.body);
-        }
-      });
-  } else {
-    res.send('');
-  }
-});
+
 //腾讯新闻
 router.get('/qqNews', (req, res, next) => {
   judge(req.query, res, qqNews);
